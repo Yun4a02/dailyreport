@@ -3583,6 +3583,53 @@
             }
         }
 
+
+        /* === FINAL FIX: QUOTES POSTINGAN BENAR-BENAR BERSEBELAHAN === */
+        #quotesPostinganBody .quotes-posting-grid {
+            display: grid !important;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+            gap: 22px !important;
+            align-items: stretch !important;
+            width: 100% !important;
+        }
+
+        #quotesPostinganBody .quotes-posting-grid > .quotes-post-box,
+        #quotesPostinganBody .quotes-posting-grid > .quotes-post-box:first-child,
+        #quotesPostinganBody .quotes-posting-grid > .quotes-post-box:nth-child(1),
+        #quotesPostinganBody .quotes-posting-grid > .quotes-post-box:nth-child(2) {
+            grid-column: auto !important;
+            grid-row: auto !important;
+            width: 100% !important;
+            min-width: 0 !important;
+            height: 100% !important;
+        }
+
+        #quotesPostinganBody .quotes-post-textarea {
+            min-height: 300px !important;
+            max-height: 360px !important;
+        }
+
+        #quotesPostinganBody .quotes-link-lock-row {
+            display: grid !important;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 116px !important;
+            gap: 10px !important;
+            align-items: end !important;
+        }
+
+        #quotesPostinganBody .quotes-bottom-tools {
+            grid-template-columns: auto repeat(3, minmax(82px, 1fr)) !important;
+        }
+
+        @media (max-width: 760px) {
+            #quotesPostinganBody .quotes-posting-grid {
+                grid-template-columns: 1fr !important;
+            }
+            #quotesPostinganBody .quotes-link-lock-row,
+            #quotesPostinganBody .quotes-bottom-tools {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
     </style>
 </head>
 <body>
