@@ -1,0 +1,1926 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WUKONG Daily Report Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --bg-soft: #090a0d;
+            --panel: rgba(18, 18, 20, 0.82);
+            --panel-2: rgba(255, 255, 255, 0.045);
+            --card-bg: rgba(14, 14, 16, 0.88);
+            --card-glass: rgba(255, 255, 255, 0.055);
+            --neon-gold: #d4af37;
+            --gold-light: #fff0bd;
+            --gold-strong: #ffb700;
+            --gold-deep: #8a6200;
+            --gold-glow: rgba(212, 175, 55, 0.42);
+            --neon-red: #ff3c00;
+            --red-glow: rgba(255, 60, 0, 0.36);
+            --green: #00ff99;
+            --blue: #45caff;
+            --text-main: #fff8df;
+            --text-muted: rgba(255, 248, 223, 0.62);
+            --border-ui: rgba(212, 175, 55, 0.28);
+            --border-soft: rgba(255, 255, 255, 0.10);
+            --shadow-main: 0 28px 80px rgba(0, 0, 0, 0.62);
+            --radius-xl: 28px;
+            --radius-lg: 20px;
+            --radius-md: 14px;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-weight: 900 !important;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: geometricPrecision;
+        }
+
+        html {
+            min-height: 100%;
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(212, 175, 55, 0.8) rgba(0, 0, 0, 0.32);
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 18px 22px 44px;
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+            overflow-y: auto;
+            background:
+                radial-gradient(circle at 10% 8%, rgba(255, 183, 0, 0.18), transparent 26%),
+                radial-gradient(circle at 88% 10%, rgba(255, 60, 0, 0.11), transparent 27%),
+                radial-gradient(circle at 52% 102%, rgba(212, 175, 55, 0.14), transparent 34%),
+                linear-gradient(135deg, #030303 0%, #161006 45%, #070707 100%);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -2;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+            background-size: 46px 46px;
+            mask-image: radial-gradient(circle at center, rgba(0,0,0,0.88), transparent 78%);
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 16px;
+            pointer-events: none;
+            z-index: -1;
+            border: 1px solid rgba(212,175,55,0.09);
+            border-radius: 34px;
+            box-shadow: inset 0 0 90px rgba(0,0,0,0.42);
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.26); border-radius: 999px; }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--gold-light), var(--neon-gold), var(--gold-deep));
+            border-radius: 999px;
+            border: 2px solid rgba(0,0,0,0.26);
+            box-shadow: 0 0 16px var(--gold-glow);
+        }
+
+        @keyframes toastIn {
+            from { transform: translateY(-110px) scale(0.94); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        @keyframes toastOut {
+            to { transform: translateY(-110px) scale(0.94); opacity: 0; }
+        }
+
+        @keyframes charFlicker {
+            0%, 18%, 22%, 25%, 53%, 57%, 100% {
+                opacity: 1;
+                text-shadow: 0 0 10px var(--gold-glow), 0 0 25px var(--neon-gold), 0 0 44px rgba(255,183,0,0.22);
+                filter: brightness(1.05);
+            }
+            20%, 24%, 55% {
+                opacity: 0.42;
+                text-shadow: none;
+                filter: brightness(0.72);
+            }
+        }
+
+        @keyframes borderSweep {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        @keyframes softPulse {
+            0%, 100% { box-shadow: 0 0 18px rgba(212,175,55,0.14); }
+            50% { box-shadow: 0 0 36px rgba(212,175,55,0.28); }
+        }
+
+        #toast-container {
+            position: fixed;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            pointer-events: none;
+            width: min(92vw, 620px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast-msg {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-width: 260px;
+            max-width: 100%;
+            padding: 13px 30px;
+            border-radius: 999px;
+            color: #171000;
+            border: 1px solid rgba(255,255,255,0.36);
+            background: linear-gradient(135deg, #fff2c3 0%, #ffbf25 52%, #b98000 100%);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            box-shadow: 0 22px 52px rgba(0,0,0,0.48), 0 0 26px rgba(212,175,55,0.34), inset 0 1px 0 rgba(255,255,255,0.70);
+            animation: toastIn 0.42s cubic-bezier(.2,.8,.2,1), toastOut 0.38s ease-in 2.5s forwards;
+        }
+
+        .main-header-title {
+            width: min(1280px, 100%);
+            margin: 10px auto 22px;
+            padding: 24px 24px 26px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border: 1px solid rgba(212,175,55,0.26);
+            border-radius: 32px;
+            color: transparent;
+            background:
+                radial-gradient(circle at 20% 0%, rgba(255,183,0,0.18), transparent 36%),
+                linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.015)),
+                rgba(0,0,0,0.28);
+            box-shadow: var(--shadow-main), inset 0 1px 0 rgba(255,255,255,0.08);
+            overflow: hidden;
+        }
+
+        .main-header-title::before {
+            content: '';
+            display: none;
+            position: absolute;
+            top: 9px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px 14px;
+            border-radius: 999px;
+            color: rgba(255,240,189,0.72);
+            background: rgba(0,0,0,0.36);
+            border: 1px solid rgba(212,175,55,0.24);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 8px;
+            letter-spacing: 1.4px;
+            white-space: nowrap;
+        }
+
+        .main-header-title::after {
+            content: '';
+            position: absolute;
+            left: 11%;
+            right: 11%;
+            bottom: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold-light), var(--neon-gold), transparent);
+            box-shadow: 0 0 18px rgba(212,175,55,0.62);
+        }
+
+        .main-header-title div {
+            margin-top: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(22px, 3.1vw, 42px);
+            line-height: 1.14;
+            letter-spacing: clamp(4px, 0.9vw, 9px);
+            text-align: center;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #fff8dc 0%, #ffd05e 42%, #d4af37 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .main-header-title span {
+            display: inline-block;
+            animation: charFlicker 5s infinite;
+        }
+
+        .main-header-title span:nth-child(1) { animation-delay: 0.1s; }
+        .main-header-title span:nth-child(3) { animation-delay: 0.5s; }
+        .main-header-title span:nth-child(5) { animation-delay: 1.2s; }
+        .main-header-title span:nth-child(7) { animation-delay: 0.8s; }
+        .main-header-title span:nth-child(9) { animation-delay: 2.1s; }
+        .main-header-title span:nth-child(11) { animation-delay: 0.3s; }
+
+        .main-grid {
+            width: min(1280px, 100%);
+            margin: 0 auto 22px;
+            display: grid;
+            grid-template-columns: minmax(280px, 0.92fr) minmax(320px, 1.04fr) minmax(320px, 1.04fr);
+            gap: 18px;
+            align-items: stretch;
+        }
+
+        .card {
+            position: relative;
+            min-height: 560px;
+            padding: 18px;
+            border-radius: var(--radius-xl);
+            border: 1px solid rgba(212,175,55,0.28);
+            background:
+                linear-gradient(135deg, rgba(255,255,255,0.070), transparent 34%),
+                linear-gradient(180deg, rgba(24,24,26,0.88), rgba(7,7,8,0.92));
+            box-shadow: var(--shadow-main), inset 0 1px 0 rgba(255,255,255,0.075);
+            overflow: hidden;
+            backdrop-filter: blur(18px);
+            transition: transform .24s ease, border-color .24s ease, box-shadow .24s ease;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 12% 0%, rgba(255,183,0,0.16), transparent 32%),
+                linear-gradient(90deg, rgba(212,175,55,0.20), transparent 24%, transparent 74%, rgba(212,175,55,0.12));
+            opacity: 0.72;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            left: 18px;
+            right: 18px;
+            top: 0;
+            height: 3px;
+            border-radius: 0 0 999px 999px;
+            background: linear-gradient(90deg, transparent, var(--gold-light), var(--neon-gold), transparent);
+            box-shadow: 0 0 18px rgba(212,175,55,0.48);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,183,0,0.58);
+            box-shadow: 0 34px 86px rgba(0,0,0,0.70), 0 0 38px rgba(212,175,55,0.13), inset 0 1px 0 rgba(255,255,255,0.10);
+        }
+
+        .card > * { position: relative; z-index: 1; }
+
+        h2 {
+            margin: 0 0 16px;
+            padding: 13px 16px;
+            border-radius: 17px;
+            color: var(--gold-light);
+            background:
+                linear-gradient(135deg, rgba(255,183,0,0.16), rgba(255,255,255,0.035)),
+                rgba(0,0,0,0.40);
+            border: 1px solid rgba(212,175,55,0.30);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            line-height: 1.35;
+            letter-spacing: 1.5px;
+            text-align: center;
+            text-transform: uppercase;
+            text-shadow: 0 0 14px rgba(212,175,55,0.34);
+        }
+
+        .shift-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+            padding: 5px;
+            border-radius: 18px;
+            background: rgba(0,0,0,0.34);
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .shift-btn {
+            min-height: 40px;
+            border: 1px solid rgba(212,175,55,0.30);
+            border-radius: 14px;
+            color: rgba(255,240,189,0.78);
+            background: rgba(255,255,255,0.045);
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 9px;
+            letter-spacing: 0.9px;
+            transition: 0.22s ease;
+        }
+
+        .shift-btn:hover {
+            transform: translateY(-2px);
+            color: #fff;
+            border-color: rgba(212,175,55,0.66);
+            box-shadow: 0 0 18px rgba(212,175,55,0.14);
+        }
+
+        .shift-btn.active {
+            color: #151006;
+            background: linear-gradient(135deg, #fff2c3 0%, #ffbf25 56%, #b98000 100%);
+            border-color: rgba(255,255,255,0.52);
+            box-shadow: 0 12px 26px rgba(212,175,55,0.18), 0 0 22px rgba(212,175,55,0.20), inset 0 1px 0 rgba(255,255,255,0.70);
+        }
+
+        .scroll-input {
+            height: calc(100% - 82px);
+            max-height: 480px;
+            overflow-y: auto;
+            padding: 2px 8px 2px 2px;
+        }
+
+        .input-wrapper {
+            margin-bottom: 13px;
+            padding: 12px;
+            border-radius: 17px;
+            background: rgba(0,0,0,0.30);
+            border: 1px solid rgba(255,255,255,0.065);
+            transition: 0.22s ease;
+        }
+
+        .input-wrapper:hover {
+            border-color: rgba(212,175,55,0.28);
+            background: rgba(255,183,0,0.035);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            color: var(--gold-light);
+            font-size: 10px;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            outline: none;
+            color: #fff;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015)),
+                rgba(0,0,0,0.58);
+            border: 1px solid rgba(255,255,255,0.10);
+            border-left: 4px solid rgba(212,175,55,0.72);
+            border-radius: 14px;
+            padding: 13px 14px;
+            font-size: 13px;
+            transition: 0.22s ease;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        input::placeholder,
+        textarea::placeholder { color: rgba(255,255,255,0.34); }
+
+        input:focus,
+        textarea:focus {
+            border-color: rgba(255,183,0,0.68);
+            border-left-color: var(--gold-light);
+            background: rgba(255,183,0,0.055);
+            box-shadow: 0 0 0 4px rgba(255,183,0,0.08), inset 0 1px 0 rgba(255,255,255,0.06);
+        }
+
+        .btn-group-top {
+            display: grid;
+            grid-template-columns: 1fr 0.78fr;
+            gap: 10px;
+            margin-bottom: 13px;
+        }
+
+        .btn {
+            min-height: 44px;
+            padding: 11px 14px;
+            border-radius: 15px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 9.5px;
+            line-height: 1.2;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: transform 0.22s ease, filter 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+        }
+
+        .btn-copy {
+            color: #161006;
+            background: linear-gradient(135deg, #fff2c3 0%, #ffbf25 52%, #b98000 100%);
+            border-color: rgba(255,255,255,0.42);
+            box-shadow: 0 14px 28px rgba(212,175,55,0.16), inset 0 1px 0 rgba(255,255,255,0.70);
+        }
+
+        .btn-reset {
+            color: #fff;
+            background: linear-gradient(135deg, #ff7c55 0%, #ff3c00 52%, #8f1300 100%);
+            border-color: rgba(255,255,255,0.20);
+            box-shadow: 0 14px 28px rgba(255,60,0,0.16), inset 0 1px 0 rgba(255,255,255,0.28);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.07);
+            box-shadow: 0 20px 38px rgba(0,0,0,0.34), 0 0 24px rgba(212,175,55,0.14);
+        }
+
+        .preview-box-individual,
+        .preview-box-rekapan,
+        .scatter-report-box {
+            flex: 1;
+            min-height: 360px;
+            padding: 18px;
+            overflow-y: auto;
+            color: #fff7dc;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012)),
+                rgba(0,0,0,0.62);
+            border: 1px solid rgba(212,175,55,0.27);
+            border-left: 5px solid var(--neon-gold);
+            border-radius: 18px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.62;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 18px 36px rgba(0,0,0,0.24);
+        }
+
+        .textarea-rekapan {
+            height: 210px;
+            resize: vertical;
+            margin-bottom: 12px;
+            font-family: 'Courier New', monospace;
+            line-height: 1.55;
+        }
+
+        /* --- MENU BAWAH: SC BONUS SCATTER MAHJONG --- */
+        .scatter-menu-bottom {
+            width: min(1280px, 100%);
+            margin: 0 auto;
+            position: relative;
+            padding: 24px;
+            border-radius: 32px;
+            border: 1px solid rgba(212,175,55,0.34);
+            background:
+                radial-gradient(circle at 12% 0%, rgba(255,183,0,0.20), transparent 34%),
+                radial-gradient(circle at 90% 80%, rgba(255,60,0,0.10), transparent 30%),
+                linear-gradient(135deg, rgba(255,255,255,0.065), transparent 28%),
+                rgba(8, 8, 9, 0.88);
+            box-shadow: var(--shadow-main), 0 0 42px rgba(212,175,55,0.10), inset 0 1px 0 rgba(255,255,255,0.08);
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+        }
+
+        .scatter-menu-bottom::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(120deg, transparent 0%, rgba(255,240,189,0.06) 46%, transparent 62%);
+            background-size: 220% 100%;
+            animation: borderSweep 8s linear infinite;
+        }
+
+        .scatter-menu-bottom::after {
+            content: '';
+            position: absolute;
+            left: 18%;
+            right: 18%;
+            top: 0;
+            height: 3px;
+            border-radius: 0 0 999px 999px;
+            background: linear-gradient(90deg, transparent, var(--gold-light), var(--neon-gold), transparent);
+            box-shadow: 0 0 22px rgba(212,175,55,0.70);
+        }
+
+        .scatter-menu-bottom > * { position: relative; z-index: 1; }
+
+        .scatter-menu-bottom h2 {
+            width: fit-content;
+            max-width: 100%;
+            margin: 0 auto 18px;
+            padding: 12px 22px;
+            border-radius: 999px;
+            font-size: 12px;
+            letter-spacing: 1.6px;
+        }
+
+        .scatter-toolbar {
+            display: grid;
+            grid-template-columns: minmax(260px, 1.4fr) 0.72fr 0.82fr 0.58fr;
+            gap: 11px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .scatter-file-input {
+            min-height: 48px;
+            padding: 8px;
+            border-radius: 17px;
+            cursor: pointer;
+            color: rgba(255,248,223,0.74);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018)),
+                rgba(0,0,0,0.54);
+            border: 1px dashed rgba(212,175,55,0.52);
+            border-left: 5px solid var(--neon-gold);
+        }
+
+        .scatter-file-input::file-selector-button {
+            margin-right: 12px;
+            padding: 10px 14px;
+            border: none;
+            border-radius: 12px;
+            color: #151006;
+            background: linear-gradient(135deg, #fff2c3, #ffbf25, #b98000);
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 9px;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+        }
+
+        .scatter-result-grid {
+            display: grid;
+            grid-template-columns: 0.8fr 1fr 1.6fr;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .scatter-result-grid label {
+            margin-bottom: 8px;
+        }
+
+        .scatter-info-box {
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+            border-radius: 20px;
+            color: var(--gold-light);
+            background:
+                radial-gradient(circle at top, rgba(255,183,0,0.12), transparent 55%),
+                rgba(0,0,0,0.50);
+            border: 1px solid rgba(212,175,55,0.28);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 16px 34px rgba(0,0,0,0.22);
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(14px, 1.6vw, 22px);
+            line-height: 1.35;
+            text-align: center;
+            word-break: break-word;
+            animation: softPulse 4s ease-in-out infinite;
+        }
+
+        .scatter-report-box {
+            min-height: 160px;
+            max-height: 340px;
+        }
+
+        .bottom-report-grid {
+            width: min(1280px, 100%);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 18px;
+            align-items: stretch;
+        }
+
+        .bottom-report-grid .scatter-menu-bottom {
+            width: 100%;
+            margin: 0;
+            height: 100%;
+        }
+
+        .qris-menu-bottom {
+            background:
+                radial-gradient(circle at 12% 0%, rgba(69,202,255,0.14), transparent 34%),
+                radial-gradient(circle at 90% 80%, rgba(0,255,153,0.08), transparent 30%),
+                linear-gradient(135deg, rgba(255,255,255,0.065), transparent 28%),
+                rgba(8, 8, 9, 0.88);
+        }
+
+        .qris-toolbar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 11px;
+            margin-bottom: 16px;
+        }
+
+        .qris-input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .qris-input-panel {
+            padding: 16px;
+            border-radius: 22px;
+            background:
+                radial-gradient(circle at top, rgba(212,175,55,0.12), transparent 55%),
+                rgba(0,0,0,0.44);
+            border: 1px solid rgba(212,175,55,0.26);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 16px 34px rgba(0,0,0,0.22);
+        }
+
+        .qris-input-panel h3 {
+            margin: 0 0 14px;
+            color: var(--gold-light);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            letter-spacing: 1.2px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .qris-input-panel input {
+            margin-bottom: 12px;
+        }
+
+        .qris-input-panel input:last-child {
+            margin-bottom: 0;
+        }
+
+        .qris-report-box {
+            min-height: 255px;
+            max-height: 360px;
+        }
+
+        @media (max-width: 720px) {
+            .bottom-report-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+        @media (max-width: 1100px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                min-height: auto;
+            }
+
+            .scroll-input {
+                max-height: none;
+                height: auto;
+            }
+
+            .preview-box-individual,
+            .preview-box-rekapan {
+                min-height: 260px;
+            }
+
+            .scatter-toolbar,
+            .scatter-result-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bottom-report-grid {
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+                gap: 14px;
+            }
+
+            .qris-toolbar,
+            .qris-input-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 850px) {
+            body {
+                padding: 12px 10px 28px;
+            }
+
+            body::after {
+                inset: 8px;
+                border-radius: 24px;
+            }
+
+            .main-header-title,
+            .scatter-menu-bottom,
+            .qris-menu-bottom {
+                border-radius: 24px;
+                padding: 20px 14px;
+            }
+
+            .main-header-title div {
+                font-size: 20px;
+                letter-spacing: 3px;
+            }
+
+            .main-grid {
+                gap: 18px;
+                margin-bottom: 18px;
+            }
+
+            .card {
+                padding: 15px;
+                border-radius: 24px;
+            }
+
+            h2 {
+                font-size: 11px;
+                letter-spacing: 1px;
+            }
+
+            .btn-group-top {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                min-height: 46px;
+                font-size: 9px;
+            }
+
+            .preview-box-individual,
+            .preview-box-rekapan,
+            .scatter-report-box {
+                min-height: 230px;
+                font-size: 12px;
+            }
+
+            .textarea-rekapan {
+                height: 180px;
+            }
+
+            .scatter-menu-bottom h2 {
+                font-size: 10px;
+                line-height: 1.45;
+                padding: 11px 16px;
+            }
+
+            .scatter-info-box {
+                min-height: 62px;
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-header-title div {
+                font-size: 17px;
+                letter-spacing: 2px;
+            }
+
+            .shift-container {
+                grid-template-columns: 1fr;
+            }
+
+            .scatter-file-input::file-selector-button {
+                display: block;
+                width: 100%;
+                margin: 0 0 8px 0;
+            }
+        }
+
+
+        /* === FINAL RAPIBAN USER: FULL CARD, SIDE BY SIDE BOTTOM, NOMINAL CLEAN === */
+        .main-header-title {
+            width: min(1360px, 100%);
+            margin-bottom: 24px;
+        }
+
+        .main-grid {
+            width: min(1360px, 100%);
+            grid-template-columns: minmax(300px, 0.95fr) minmax(340px, 1.05fr) minmax(340px, 1.05fr);
+            gap: 20px;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            min-height: 640px;
+            height: clamp(640px, calc(100vh - 190px), 760px);
+            padding: 20px;
+        }
+
+        .card h2,
+        .shift-container,
+        .btn-group-top,
+        .textarea-rekapan {
+            flex: 0 0 auto;
+        }
+
+        .scroll-input {
+            flex: 1 1 auto;
+            height: auto !important;
+            max-height: none !important;
+            min-height: 0;
+            padding: 4px 10px 0 2px;
+        }
+
+        .preview-box-individual,
+        .preview-box-rekapan {
+            flex: 1 1 auto;
+            min-height: 0 !important;
+            max-height: none;
+        }
+
+        .textarea-rekapan {
+            height: auto !important;
+            min-height: 215px;
+            flex-basis: 215px;
+        }
+
+        .bottom-report-grid {
+            width: min(1360px, 100%);
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .bottom-report-grid .scatter-menu-bottom {
+            display: flex;
+            flex-direction: column;
+            min-height: 560px;
+            padding: 24px;
+        }
+
+        .bottom-report-grid .scatter-menu-bottom h2 {
+            width: 100%;
+            max-width: none;
+            margin-bottom: 16px;
+            padding: 12px 18px;
+            line-height: 1.35;
+        }
+
+        .bottom-report-grid .scatter-menu-bottom h2 span {
+            display: inline-block;
+            margin-top: 2px;
+            color: rgba(255,248,223,0.84);
+            font-size: 0.82em;
+            letter-spacing: 1.1px;
+        }
+
+        .bottom-report-grid .scatter-toolbar {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .bottom-report-grid .scatter-file-input {
+            grid-column: 1 / -1;
+        }
+
+        .bottom-report-grid .scatter-result-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .bottom-report-grid .scatter-result-grid > div:nth-child(3) {
+            grid-column: 1 / -1;
+        }
+
+        .scatter-info-box {
+            min-height: 72px;
+            font-size: clamp(14px, 1.12vw, 20px);
+        }
+
+        #scatterFolderName {
+            min-height: 78px;
+            font-size: clamp(11px, 0.92vw, 14px) !important;
+            line-height: 1.45;
+            letter-spacing: 0.5px;
+            text-transform: none;
+            padding-inline: 18px;
+        }
+
+        .scatter-report-box,
+        .qris-report-box {
+            flex: 1 1 auto;
+            min-height: 220px;
+            max-height: none !important;
+        }
+
+        .qris-input-grid {
+            flex: 0 0 auto;
+        }
+
+        .qris-toolbar {
+            flex: 0 0 auto;
+        }
+
+        .qris-menu-bottom .qris-input-panel {
+            min-height: 210px;
+        }
+
+        @media (max-width: 1150px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                height: auto;
+                min-height: 560px;
+            }
+
+            .bottom-report-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .bottom-report-grid .scatter-toolbar,
+            .bottom-report-grid .scatter-result-grid,
+            .qris-toolbar,
+            .qris-input-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bottom-report-grid .scatter-result-grid > div:nth-child(3) {
+                grid-column: auto;
+            }
+
+            .card {
+                min-height: auto;
+            }
+        }
+
+
+
+        /* === UPDATE TITLE: WUKONG TITLE DI DEPAN TANPA SUBTITLE === */
+        .main-header-title {
+            padding: 18px 24px 20px !important;
+            justify-content: center !important;
+            align-items: center !important;
+        }
+
+        .main-header-title::before {
+            content: '' !important;
+            display: none !important;
+        }
+
+        .main-header-title .title-line {
+            margin-top: 0 !important;
+            width: 100%;
+            display: block;
+            text-align: center;
+            white-space: nowrap;
+            font-size: clamp(24px, 3vw, 42px) !important;
+            letter-spacing: clamp(3px, 0.72vw, 8px) !important;
+        }
+
+        @media (max-width: 850px) {
+            .main-header-title .title-line {
+                white-space: normal;
+                font-size: 20px !important;
+                line-height: 1.45;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-header-title .title-line {
+                font-size: 17px !important;
+                letter-spacing: 2px !important;
+            }
+        }
+
+
+        /* === FIX TITLE: TEKS WUKONG JELAS DI DEPAN, TIDAK BLUR === */
+        .main-header-title {
+            position: relative !important;
+            z-index: 50 !important;
+            overflow: visible !important;
+            padding: 18px 28px 20px !important;
+            justify-content: center !important;
+            align-items: center !important;
+            isolation: isolate !important;
+        }
+
+        .main-header-title::before {
+            display: none !important;
+            content: '' !important;
+        }
+
+        .main-header-title::after {
+            z-index: 0 !important;
+            pointer-events: none !important;
+        }
+
+        .main-header-title .title-line {
+            position: relative !important;
+            z-index: 5 !important;
+            margin-top: 0 !important;
+            width: 100% !important;
+            display: block !important;
+            text-align: center !important;
+            white-space: nowrap !important;
+            font-family: 'Orbitron', sans-serif !important;
+            font-size: clamp(26px, 3vw, 44px) !important;
+            line-height: 1.12 !important;
+            letter-spacing: clamp(2px, 0.6vw, 7px) !important;
+            color: #ffd85d !important;
+            background: linear-gradient(90deg, #fff9dc 0%, #ffd45e 45%, #d4af37 75%, #fff0aa 100%) !important;
+            -webkit-background-clip: text !important;
+            background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            text-shadow: 0 0 8px rgba(212, 175, 55, 0.35) !important;
+            filter: none !important;
+            opacity: 1 !important;
+            transform: none !important;
+        }
+
+        .main-header-title .title-line span {
+            display: inline !important;
+            animation: none !important;
+            opacity: 1 !important;
+            filter: none !important;
+            text-shadow: none !important;
+        }
+
+        @media (max-width: 850px) {
+            .main-header-title .title-line {
+                white-space: normal !important;
+                font-size: 21px !important;
+                line-height: 1.42 !important;
+                letter-spacing: 2px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-header-title .title-line {
+                font-size: 17px !important;
+                letter-spacing: 1.4px !important;
+            }
+        }
+
+    
+        /* === DAILY REPOT WHATSAPP MENU === */
+        .daily-wa-menu-bottom {
+            width: min(1360px, 100%);
+            margin: 22px auto 0;
+            position: relative;
+            padding: 24px;
+            border-radius: 32px;
+            border: 1px solid rgba(212,175,55,0.34);
+            background:
+                radial-gradient(circle at 12% 0%, rgba(255,183,0,0.20), transparent 34%),
+                radial-gradient(circle at 88% 84%, rgba(255,60,0,0.10), transparent 30%),
+                linear-gradient(135deg, rgba(255,255,255,0.065), transparent 28%),
+                rgba(8, 8, 9, 0.90);
+            box-shadow: var(--shadow-main), 0 0 42px rgba(212,175,55,0.10), inset 0 1px 0 rgba(255,255,255,0.08);
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+        }
+
+        .daily-wa-menu-bottom::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(120deg, transparent 0%, rgba(255,240,189,0.06) 46%, transparent 62%);
+            background-size: 220% 100%;
+            animation: borderSweep 8s linear infinite;
+        }
+
+        .daily-wa-menu-bottom::after {
+            content: '';
+            position: absolute;
+            left: 18%;
+            right: 18%;
+            top: 0;
+            height: 3px;
+            border-radius: 0 0 999px 999px;
+            background: linear-gradient(90deg, transparent, var(--gold-light), var(--neon-gold), transparent);
+            box-shadow: 0 0 22px rgba(212,175,55,0.70);
+        }
+
+        .daily-wa-menu-bottom > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .daily-wa-menu-bottom h2 {
+            width: 100%;
+            max-width: none;
+            margin: 0 auto 18px;
+            padding: 12px 22px;
+            border-radius: 999px;
+            font-size: 12px;
+            letter-spacing: 1.6px;
+            border-color: rgba(212,175,55,0.30);
+            color: var(--gold-light);
+            background:
+                linear-gradient(135deg, rgba(255,183,0,0.16), rgba(255,255,255,0.035)),
+                rgba(0,0,0,0.42);
+        }
+
+        .daily-wa-layout {
+            display: grid;
+            grid-template-columns: minmax(300px, 0.92fr) minmax(320px, 1.08fr);
+            gap: 18px;
+            align-items: stretch;
+        }
+
+        .daily-wa-input-panel,
+        .daily-wa-preview-panel {
+            padding: 18px;
+            border-radius: 24px;
+            background:
+                radial-gradient(circle at top, rgba(255,183,0,0.12), transparent 55%),
+                rgba(0,0,0,0.44);
+            border: 1px solid rgba(212,175,55,0.26);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 16px 34px rgba(0,0,0,0.22);
+        }
+
+        .daily-wa-input-panel .input-wrapper {
+            margin-bottom: 12px;
+        }
+
+        .daily-wa-toolbar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .daily-wa-status-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .daily-wa-status-chip {
+            min-height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            border-radius: 18px;
+            color: rgba(255,248,223,0.62);
+            background: rgba(255,255,255,0.035);
+            border: 1px solid rgba(255,255,255,0.08);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 9px;
+            letter-spacing: 0.8px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .daily-wa-status-chip.done {
+            color: #0b160f;
+            border-color: rgba(255,183,0,0.58);
+            background: linear-gradient(135deg, #fff2c3 0%, #ffbf25 52%, #b98000 100%);
+            box-shadow: 0 10px 24px rgba(212,175,55,0.18), inset 0 1px 0 rgba(255,255,255,0.58);
+        }
+
+        .daily-wa-report-box {
+            min-height: 280px;
+            max-height: 420px;
+            padding: 18px;
+            overflow-y: auto;
+            color: #fff7dc;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012)),
+                rgba(0,0,0,0.62);
+            border: 1px solid rgba(212,175,55,0.27);
+            border-left: 5px solid var(--neon-gold);
+            border-radius: 18px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.72;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 18px 36px rgba(0,0,0,0.24);
+        }
+
+        @media (max-width: 920px) {
+            .daily-wa-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .daily-wa-status-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .daily-wa-toolbar,
+            .daily-wa-status-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    
+        .daily-wa-status-chip.done {
+            color: #171000 !important;
+            text-shadow: none !important;
+        }
+
+        .daily-wa-menu-bottom input {
+            border-left-color: rgba(212,175,55,0.72) !important;
+        }
+
+        .daily-wa-menu-bottom input:focus {
+            border-color: rgba(255,183,0,0.68) !important;
+            border-left-color: var(--gold-light) !important;
+            background: rgba(255,183,0,0.055) !important;
+            box-shadow: 0 0 0 4px rgba(255,183,0,0.08), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+        }
+
+
+
+        /* === FINAL FIX: KOLOM POSTINGAN RUTIN WA WAJIB TAMPIL DI KIRI === */
+        .daily-wa-input-panel {
+            display: grid !important;
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+            align-content: start !important;
+            overflow: visible !important;
+        }
+
+        .daily-wa-input-panel .input-wrapper {
+            margin-bottom: 0 !important;
+            display: block !important;
+        }
+
+        .daily-wa-rutin-wrapper {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            border-color: rgba(255, 183, 0, 0.48) !important;
+            background:
+                radial-gradient(circle at left, rgba(255,183,0,0.10), transparent 58%),
+                rgba(0,0,0,0.36) !important;
+        }
+
+        .daily-wa-rutin-wrapper label {
+            color: #fff0bd !important;
+            letter-spacing: 1.05px !important;
+        }
+
+        .daily-wa-rutin-note {
+            margin-top: 7px;
+            color: rgba(255,248,223,0.58);
+            font-size: 9px;
+            letter-spacing: 0.7px;
+            line-height: 1.35;
+            text-transform: uppercase;
+        }
+
+        .daily-wa-status-grid {
+            grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+        }
+
+        #waStatusRutin.done {
+            color: #171000 !important;
+            background: linear-gradient(135deg, #fff2c3 0%, #ffbf25 52%, #b98000 100%) !important;
+            border-color: rgba(255,183,0,0.58) !important;
+        }
+
+        @media (max-width: 1100px) {
+            .daily-wa-status-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .daily-wa-status-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- CONTAINER NOTIFIKASI -->
+    <div id="toast-container"></div>
+
+    <div class="main-header-title">
+        <div class="title-line">
+            <span>W</span><span>U</span><span>K</span><span>O</span><span>N</span><span>G</span> &nbsp;
+            <span>D</span><span>A</span><span>I</span><span>L</span><span>Y</span> &nbsp;
+            <span>R</span><span>E</span><span>P</span><span>O</span><span>R</span><span>T</span> &nbsp;
+            <span>P</span><span>A</span><span>N</span><span>E</span><span>L</span>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <!-- KOLOM 1: INPUT DATA -->
+        <div class="card">
+            <h2>INPUT DATA</h2>
+            <div class="shift-container">
+                <button class="shift-btn" id="btn-PAGI" onclick="setShift('PAGI')">PAGI</button>
+                <button class="shift-btn" id="btn-SORE" onclick="setShift('SORE')">SORE</button>
+                <button class="shift-btn" id="btn-MALAM" onclick="setShift('MALAM')">MALAM</button>
+            </div>
+            <div class="scroll-input">
+                <div class="input-wrapper"><label>Link Daftar</label><input type="text" id="in_daftar" placeholder="Input link..." oninput="updateReport()"></div>
+                <div class="input-wrapper"><label>Link Alternatif</label><input type="text" id="in_alt" placeholder="Input link..." oninput="updateReport()"></div>
+                <div class="input-wrapper"><label>Livechat</label><input type="text" id="in_live" placeholder="Input link..." oninput="updateReport()"></div>
+                <div class="input-wrapper"><label>Facebook</label><input type="text" id="in_fb" placeholder="Input link..." oninput="updateReport()"></div>
+                <div class="input-wrapper"><label>WhatsApp</label><input type="text" id="in_wa" placeholder="Input link..." oninput="updateReport()"></div>
+                <div class="input-wrapper"><label>RTP</label><input type="text" id="in_rtp" placeholder="Input link..." oninput="updateReport()"></div>
+                <div class="input-wrapper"><label>Promo & Bonus</label><input type="text" id="in_promo" placeholder="Input link..." oninput="updateReport()"></div>
+                <div class="input-wrapper"><label>Prediksi</label><input type="text" id="in_prediksi" placeholder="Input link..." oninput="updateReport()"></div>
+            </div>
+        </div>
+
+        <!-- KOLOM 2: PREVIEW INDIVIDUAL -->
+        <div class="card">
+            <h2>PREVIEW INDIVIDUAL</h2>
+            <div class="btn-group-top">
+                <button class="btn btn-copy" onclick="copyText('reportResult')">COPY REPORT</button>
+                <button class="btn btn-reset" onclick="resetIndividual()">RESET</button>
+            </div>
+            <div class="preview-box-individual" id="reportResult"></div>
+        </div>
+
+        <!-- KOLOM 3: REKAPAN HARIAN -->
+        <div class="card">
+            <h2>REKAPAN DAILY REPORT</h2>
+            <div class="btn-group-top">
+                <button class="btn btn-copy" onclick="copyText('rekapanResult')">COPY REKAPAN</button>
+                <button class="btn btn-reset" onclick="resetRekapan()">RESET ALL</button>
+            </div>
+            <textarea class="textarea-rekapan" id="in_rekapan" placeholder="Tempel kumpulan reportan di sini..." oninput="updateRekapan()"></textarea>
+            <div class="preview-box-rekapan" id="rekapanResult"></div>
+        </div>
+    </div>
+
+    <!-- MENU BAWAH: SC BONUS SCATTER + REPORT QRIS -->
+    <div class="bottom-report-grid">
+        <div class="scatter-menu-bottom">
+            <h2>SC BONUS SCATTER<br><span>MAHJONG WAYS 1 &amp; 2</span></h2>
+            <div class="scatter-toolbar">
+                <input type="file" id="scatterExcelInput" class="scatter-file-input" accept=".xlsx,.xls,.xlsm,.xlsb,.csv,.ods" onchange="handleScatterExcel(event)">
+                <button class="btn btn-copy" onclick="copyText('scatterReportResult')">COPY REPORT</button>
+                <button class="btn btn-copy" onclick="copyText('scatterFolderName')">COPY NAMA FOLDER</button>
+                <button class="btn btn-reset" onclick="resetScatterReport()">RESET SC</button>
+            </div>
+            <div class="scatter-result-grid">
+                <div>
+                    <label>Total All Kolom C</label>
+                    <div class="scatter-info-box" id="scatterTotalUsers">0</div>
+                </div>
+                <div>
+                    <label>Total Nominal Kolom I</label>
+                    <div class="scatter-info-box" id="scatterTotalNominal">0</div>
+                </div>
+                <div>
+                    <label>Nama Folder Otomatis</label>
+                    <div class="scatter-info-box" id="scatterFolderName"></div>
+                </div>
+            </div>
+            <div class="scatter-report-box" id="scatterReportResult">Upload file Excel terlebih dahulu untuk membaca Kolom C User ID dan Kolom I Nominal.</div>
+        </div>
+
+        <div class="scatter-menu-bottom qris-menu-bottom">
+            <h2>REPORT DEPOSIT<br><span>QRIS</span></h2>
+            <div class="qris-toolbar">
+                <button class="btn btn-copy" onclick="copyText('qrisReportResult')">COPY REPORT QRIS</button>
+                <button class="btn btn-reset" onclick="resetQrisReport()">RESET QRIS</button>
+            </div>
+            <div class="qris-input-grid">
+                <div class="qris-input-panel">
+                    <h3>QRIS Minerapay</h3>
+                    <label>Total Mutasi</label>
+                    <input type="text" id="qris_minerapay_mutasi" placeholder="Contoh: 25" oninput="updateQrisReport()">
+                    <label>Total Pendapatan</label>
+                    <input type="text" id="qris_minerapay_pendapatan" placeholder="Contoh: 1,000,000" oninput="updateQrisReport()">
+                </div>
+                <div class="qris-input-panel">
+                    <h3>QRIS VIP NST</h3>
+                    <label>Total Mutasi</label>
+                    <input type="text" id="qris_vip_mutasi" placeholder="Contoh: 18" oninput="updateQrisReport()">
+                    <label>Total Pendapatan</label>
+                    <input type="text" id="qris_vip_pendapatan" placeholder="Contoh: 2,000,000" oninput="updateQrisReport()">
+                </div>
+            </div>
+            <div class="scatter-report-box qris-report-box" id="qrisReportResult"></div>
+        </div>
+    </div>
+
+
+    <!-- MENU BAWAH BARU: DAILY REPOT WHATSAPP -->
+    <div class="daily-wa-menu-bottom">
+        <h2>DAILY REPOT WHATSAPP</h2>
+        <div class="daily-wa-layout">
+            <div class="daily-wa-input-panel">
+                <div class="input-wrapper">
+                    <label>Prediksi</label>
+                    <input type="text" id="wa_prediksi" placeholder="Tempel link prediksi..." oninput="updateDailyWhatsappReport()">
+                </div>
+                <div class="input-wrapper">
+                    <label>Link Alternatif</label>
+                    <input type="text" id="wa_link_alternatif" placeholder="Tempel link alternatif..." oninput="updateDailyWhatsappReport()">
+                </div>
+                <div class="input-wrapper">
+                    <label>Kemenangan 1</label>
+                    <input type="text" id="wa_kemenangan_1" placeholder="Tempel link kemenangan 1..." oninput="updateDailyWhatsappReport()">
+                </div>
+                <div class="input-wrapper">
+                    <label>Kemenangan 2</label>
+                    <input type="text" id="wa_kemenangan_2" placeholder="Tempel link kemenangan 2..." oninput="updateDailyWhatsappReport()">
+                </div>
+                <div class="input-wrapper daily-wa-rutin-wrapper" id="waRutinInputWrapper">
+                    <label>Postingan Rutin Selasa / Jumat</label>
+                    <input type="text" id="wa_rutin" placeholder="Tempel link postingan rutin..." oninput="updateDailyWhatsappReport()">
+                    <div class="daily-wa-rutin-note" id="waRutinNote">Hari biasa tampil garis dan tidak ikut copy. Selasa/Jumat ikut copy.</div>
+                </div>
+            </div>
+
+            <div class="daily-wa-preview-panel">
+                <div class="daily-wa-toolbar">
+                    <button class="btn btn-copy" onclick="copyText('dailyWhatsappResult')">COPY WHATSAPP</button>
+                    <button class="btn btn-reset" onclick="resetDailyWhatsappReport()">RESET WHATSAPP</button>
+                </div>
+
+                <div class="daily-wa-status-grid">
+                    <div class="daily-wa-status-chip" id="waStatusPrediksi">PREDIKSI</div>
+                    <div class="daily-wa-status-chip" id="waStatusAlt">LINK ALTERNATIF</div>
+                    <div class="daily-wa-status-chip" id="waStatusWin1">KEMENANGAN 1</div>
+                    <div class="daily-wa-status-chip" id="waStatusWin2">KEMENANGAN 2</div>
+                    <div class="daily-wa-status-chip" id="waStatusRutin">POSTINGAN RUTIN SELASA / JUMAT -</div>
+                </div>
+
+                <div class="daily-wa-report-box" id="dailyWhatsappResult"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        let currentStaff = "";
+
+        function showNotif(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast-msg';
+            toast.innerHTML = `<span>⚡</span> ${msg}`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.remove(); }, 3000);
+        }
+
+        function getIndoDate() {
+            const now = new Date();
+            const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            return `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+        }
+
+        function autoDetectShift() {
+            const hour = new Date().getHours();
+            if (hour >= 7 && hour < 15) return "PAGI";
+            if (hour >= 15 && hour < 21) return "SORE";
+            return "MALAM";
+        }
+
+        function setShift(shift) {
+            document.querySelectorAll('.shift-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${shift}`).classList.add('active');
+            currentStaff = `CS LINE ${shift}`;
+            localStorage.setItem('wukong_shift', shift);
+            updateReport();
+        }
+
+        function updateReport() {
+            const fields = ['in_daftar', 'in_alt', 'in_live', 'in_fb', 'in_wa', 'in_rtp', 'in_promo', 'in_prediksi'];
+            const dataToStore = {};
+            
+            const getVal = (id) => {
+                const value = document.getElementById(id).value.trim();
+                dataToStore[id] = value; 
+                return value ? `${value} ✅` : "";
+            };
+
+            const report = `Info : Togelup\nPerihal : Pengecekan Bot Telegram\nStaff : ${currentStaff}\nTanggal : ${getIndoDate()}\n\nLink daftar : ${getVal('in_daftar')}\nLink alternatif : ${getVal('in_alt')}\nlivechat : ${getVal('in_live')}\nfacebook : ${getVal('in_fb')}\nwhatsapp : ${getVal('in_wa')}\nRTP : ${getVal('in_rtp')}\nPromo & Bonus : ${getVal('in_promo')}\nPrediksi : ${getVal('in_prediksi')}\n\nket : Pengujian BOT tele aman tidak ada kendala.`;
+            
+            document.getElementById('reportResult').innerText = report;
+            localStorage.setItem('wukong_individual_data', JSON.stringify(dataToStore));
+        }
+
+        function updateRekapan() {
+            const content = document.getElementById('in_rekapan').value;
+            localStorage.setItem('saved_rekapan_wukong', content);
+            
+            const rekapan = `Info : Togelup\nPerihal : Rekapan Daily Report Tanggal ${getIndoDate()}\n\n${content}`;
+            document.getElementById('rekapanResult').innerText = rekapan;
+        }
+
+        function copyText(id) {
+            const target = document.getElementById(id);
+            const text = target.dataset.copyText || target.innerText;
+            if(!text.trim()) {
+                showNotif("TIDAK ADA DATA UNTUK DISALIN");
+                return;
+            }
+            const elem = document.createElement('textarea');
+            elem.value = text;
+            document.body.appendChild(elem);
+            elem.select();
+            document.execCommand('copy');
+            document.body.removeChild(elem);
+            showNotif("REPORT BERHASIL DISALIN");
+        }
+
+        function resetIndividual() {
+            if(confirm("Bersihkan semua data input?")) {
+                const inputs = document.querySelectorAll('.scroll-input input');
+                inputs.forEach(input => input.value = "");
+                localStorage.removeItem('wukong_individual_data');
+                updateReport();
+                showNotif("DATA INPUT DIBERSIHKAN");
+            }
+        }
+
+        function resetRekapan() {
+            if(confirm("Hapus semua rekapan?")) {
+                document.getElementById('in_rekapan').value = "";
+                localStorage.removeItem('saved_rekapan_wukong');
+                updateRekapan();
+                showNotif("REKAPAN TELAH DIBERSIHKAN");
+            }
+        }
+
+
+
+        function getEnglishDate() {
+            const now = new Date();
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            return `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+        }
+
+
+        function getIndoUpperDate() {
+            const now = new Date();
+            const months = ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
+            return `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+        }
+
+        function getScatterFolderName() {
+            return `scatter mahjong ways 1 _ 2_ ${getEnglishDate()}`;
+        }
+
+        function formatRupiahNumber(value) {
+            const number = Number(value || 0);
+            return `Rp. ${number.toLocaleString('en-US')}`;
+        }
+
+        function parseNominalValue(value) {
+            if (typeof value === 'number' && isFinite(value)) return value;
+            let text = String(value ?? '').trim();
+            if (!text) return 0;
+
+            text = text.replace(/rp/ig, '').replace(/idr/ig, '').replace(/\s+/g, '');
+            text = text.replace(/[^0-9,\.\-]/g, '');
+            if (!text || text === '-' || text === ',' || text === '.') return 0;
+
+            const lastComma = text.lastIndexOf(',');
+            const lastDot = text.lastIndexOf('.');
+
+            if (lastComma > -1 && lastDot > -1) {
+                if (lastComma > lastDot) {
+                    const decimalLength = text.length - lastComma - 1;
+                    text = text.replace(/\./g, '');
+                    if (decimalLength > 0 && decimalLength <= 2) text = text.slice(0, lastComma).replace(/[^0-9\-]/g, '');
+                    else text = text.replace(/,/g, '');
+                } else {
+                    const decimalLength = text.length - lastDot - 1;
+                    text = text.replace(/,/g, '');
+                    if (decimalLength > 0 && decimalLength <= 2) text = text.slice(0, lastDot).replace(/[^0-9\-]/g, '');
+                    else text = text.replace(/\./g, '');
+                }
+            } else if (lastComma > -1) {
+                const parts = text.split(',');
+                const isThousands = /^\d{1,3}(,\d{3})+$/.test(text);
+                if (isThousands) text = text.replace(/,/g, '');
+                else if (parts[parts.length - 1].length <= 2) text = parts.slice(0, -1).join('').replace(/[^0-9\-]/g, '');
+                else text = text.replace(/,/g, '');
+            } else if (lastDot > -1) {
+                const parts = text.split('.');
+                const isThousands = /^\d{1,3}(\.\d{3})+$/.test(text);
+                if (isThousands) text = text.replace(/\./g, '');
+                else if (parts[parts.length - 1].length <= 2) text = parts.slice(0, -1).join('').replace(/[^0-9\-]/g, '');
+                else text = text.replace(/\./g, '');
+            }
+
+            const numeric = Number(String(text).replace(/[^0-9\-]/g, ''));
+            return isFinite(numeric) ? numeric : 0;
+        }
+
+        function isScatterHeaderRow(userId, nominal) {
+            const userText = String(userId ?? '').toLowerCase();
+            const nominalText = String(nominal ?? '').toLowerCase();
+            return (userText.includes('user') || userText.includes('member') || userText === 'id') &&
+                   (nominalText.includes('nominal') || nominalText.includes('amount') || nominalText.includes('jumlah'));
+        }
+
+        async function handleScatterExcel(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            if (typeof XLSX === 'undefined') {
+                showNotif("LIBRARY EXCEL BELUM TERLOAD");
+                return;
+            }
+
+            try {
+                const buffer = await file.arrayBuffer();
+                const workbook = XLSX.read(buffer, { type: 'array' });
+                let totalUsers = 0;
+                let totalNominal = 0;
+
+                workbook.SheetNames.forEach(sheetName => {
+                    const sheet = workbook.Sheets[sheetName];
+                    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, defval: '' });
+
+                    rows.forEach(row => {
+                        const userId = row[2];   // Kolom C
+                        const nominal = row[8];  // Kolom I
+                        const cleanUser = String(userId ?? '').trim();
+                        const cleanNominal = String(nominal ?? '').trim();
+
+                        if (!cleanUser && !cleanNominal) return;
+                        if (isScatterHeaderRow(cleanUser, cleanNominal)) return;
+
+                        if (cleanUser) totalUsers++;
+                        totalNominal += parseNominalValue(cleanNominal);
+                    });
+                });
+
+                const folderName = getScatterFolderName();
+                const report = `Bonus scatter mahjong ways 1 & 2\nTotal All : ${totalUsers}\nNominal  : ${formatRupiahNumber(totalNominal)}\n\nKet : Dilakukan Manual Deposit yang dimana Member mendapatkan Bonus scatter.`;
+
+                document.getElementById('scatterTotalUsers').innerText = totalUsers;
+                document.getElementById('scatterTotalNominal').innerText = Number(totalNominal || 0).toLocaleString('en-US');
+                document.getElementById('scatterFolderName').innerText = folderName;
+                document.getElementById('scatterReportResult').innerText = report;
+                showNotif("EXCEL BERHASIL DIBACA");
+            } catch (error) {
+                console.error(error);
+                showNotif("FILE EXCEL GAGAL DIBACA");
+            }
+        }
+
+        function resetScatterReport() {
+            document.getElementById('scatterExcelInput').value = '';
+            document.getElementById('scatterTotalUsers').innerText = '0';
+            document.getElementById('scatterTotalNominal').innerText = '0';
+            document.getElementById('scatterFolderName').innerText = getScatterFolderName();
+
+            // Load Daily Repot WhatsApp
+            loadDailyWhatsappReport();
+            loadQrisReport();
+            document.getElementById('scatterReportResult').innerText = 'Upload file Excel terlebih dahulu untuk membaca Kolom C User ID dan Kolom I Nominal.';
+            showNotif("SC BONUS SCATTER DIRESET");
+        }
+
+
+        function formatQrisRupiah(value) {
+            const rawText = String(value ?? '').trim();
+            if (!rawText) return 'Rp. ,-';
+            const number = parseNominalValue(rawText);
+            if (!number) return 'Rp. ,-';
+            return `Rp. ${number.toLocaleString('en-US')},-`;
+        }
+
+        function getQrisInputValue(id) {
+            const el = document.getElementById(id);
+            return el ? el.value.trim() : '';
+        }
+
+        function updateQrisReport() {
+            const mineraMutasi = getQrisInputValue('qris_minerapay_mutasi');
+            const mineraPendapatan = getQrisInputValue('qris_minerapay_pendapatan');
+            const vipMutasi = getQrisInputValue('qris_vip_mutasi');
+            const vipPendapatan = getQrisInputValue('qris_vip_pendapatan');
+
+            const qrisData = {
+                qris_minerapay_mutasi: mineraMutasi,
+                qris_minerapay_pendapatan: mineraPendapatan,
+                qris_vip_mutasi: vipMutasi,
+                qris_vip_pendapatan: vipPendapatan
+            };
+            localStorage.setItem('wukong_qris_report_data', JSON.stringify(qrisData));
+
+            const report = `Info : TogelUP\nPerihal : Deposit QRIS\nTanggal : ${getIndoUpperDate()}\n\nQRIS Minerapay\nTotal Mutasi : ${mineraMutasi} Mutasi\nTotal Pendapatan : ${formatQrisRupiah(mineraPendapatan)}\n\nQRIS VIP NST \nTotal Mutasi : ${vipMutasi} Mutasi\nTotal Pendapatan : ${formatQrisRupiah(vipPendapatan)}`;
+            document.getElementById('qrisReportResult').innerText = report;
+        }
+
+        function loadQrisReport() {
+            const savedQris = localStorage.getItem('wukong_qris_report_data');
+            if (savedQris) {
+                try {
+                    const data = JSON.parse(savedQris);
+                    Object.keys(data).forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.value = data[id];
+                    });
+                } catch (e) {
+                    localStorage.removeItem('wukong_qris_report_data');
+                }
+            }
+            updateQrisReport();
+        }
+
+        function resetQrisReport() {
+            ['qris_minerapay_mutasi', 'qris_minerapay_pendapatan', 'qris_vip_mutasi', 'qris_vip_pendapatan'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            localStorage.removeItem('wukong_qris_report_data');
+            updateQrisReport();
+            showNotif("REPORT QRIS DIRESET");
+        }
+
+
+        function getDailyWhatsappDate() {
+            const now = new Date();
+            const months = ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
+            return `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+        }
+
+        function getDailyWhatsappInput(id) {
+            const el = document.getElementById(id);
+            return el ? el.value.trim() : '';
+        }
+
+        function getDailyWhatsappCheck(id) {
+            return getDailyWhatsappInput(id) ? '✅' : '';
+        }
+
+        function getDailyWhatsappDisplay(id) {
+            const value = getDailyWhatsappInput(id);
+            return value ? `${value} ✅` : '';
+        }
+
+        function isDailyWhatsappRoutineDay() {
+            const day = new Date().getDay();
+            // 2 = Selasa, 5 = Jumat
+            return day === 2 || day === 5;
+        }
+
+        function getDailyWhatsappRoutineDisplayLine() {
+            const isRoutineDay = isDailyWhatsappRoutineDay();
+            const routineLink = getDailyWhatsappInput('wa_rutin');
+
+            // Hari biasa tetap tampil garis di preview, tetapi tidak ikut tercopy.
+            if (!isRoutineDay) return 'POSTINGAN RUTIN SELASA / JUMAT : -';
+
+            // Hari Selasa/Jumat tidak jadi garis. Emoji ceklis hanya muncul jika link sudah ditempel.
+            return routineLink ? `POSTINGAN RUTIN SELASA / JUMAT : ${routineLink} ✅` : 'POSTINGAN RUTIN SELASA / JUMAT :';
+        }
+
+        function getDailyWhatsappRoutineCopyLine() {
+            const routineLink = getDailyWhatsappInput('wa_rutin');
+            return routineLink ? `POSTINGAN RUTIN SELASA / JUMAT : ${routineLink} ✅` : 'POSTINGAN RUTIN SELASA / JUMAT :';
+        }
+
+        function updateDailyWhatsappRoutineStatus() {
+            const chip = document.getElementById('waStatusRutin');
+            if (!chip) return;
+
+            const isRoutineDay = isDailyWhatsappRoutineDay();
+            const hasRoutineLink = !!getDailyWhatsappInput('wa_rutin');
+            const note = document.getElementById('waRutinNote');
+
+            // Emoji ceklis hanya muncul setelah link ditempel.
+            chip.classList.toggle('done', hasRoutineLink);
+            if (hasRoutineLink) {
+                chip.innerText = 'POSTINGAN RUTIN SELASA / JUMAT ✅';
+            } else {
+                chip.innerText = isRoutineDay ? 'POSTINGAN RUTIN SELASA / JUMAT' : 'POSTINGAN RUTIN SELASA / JUMAT -';
+            }
+
+            if (note) {
+                note.innerText = isRoutineDay
+                    ? 'Hari Selasa/Jumat: bagian ini ikut tercopy. Ceklis muncul setelah link ditempel.'
+                    : 'Hari biasa: preview tampil garis dan bagian ini tidak ikut tercopy.';
+            }
+        }
+
+        function setDailyWhatsappStatus(chipId, inputId, baseText) {
+            const chip = document.getElementById(chipId);
+            if (!chip) return;
+            const hasValue = !!getDailyWhatsappInput(inputId);
+            chip.classList.toggle('done', hasValue);
+            chip.innerText = hasValue ? `${baseText} ✅` : baseText;
+        }
+
+        function updateDailyWhatsappReport() {
+            const data = {
+                wa_prediksi: getDailyWhatsappInput('wa_prediksi'),
+                wa_link_alternatif: getDailyWhatsappInput('wa_link_alternatif'),
+                wa_kemenangan_1: getDailyWhatsappInput('wa_kemenangan_1'),
+                wa_kemenangan_2: getDailyWhatsappInput('wa_kemenangan_2'),
+                wa_rutin: getDailyWhatsappInput('wa_rutin')
+            };
+
+            localStorage.setItem('wukong_daily_whatsapp_report', JSON.stringify(data));
+
+            const isRoutineDay = isDailyWhatsappRoutineDay();
+            const baseReport = `POSTINGAN WHATSAPP
+TANGGAL : ${getDailyWhatsappDate()}
+
+
+PREDIKSI :  ${getDailyWhatsappDisplay('wa_prediksi')}
+LINK ALTERNATIF :  ${getDailyWhatsappDisplay('wa_link_alternatif')}
+KEMENANGAN 1 : ${getDailyWhatsappDisplay('wa_kemenangan_1')}
+KEMENANGAN 2 :  ${getDailyWhatsappDisplay('wa_kemenangan_2')}`;
+
+            const displayReport = `${baseReport}
+${getDailyWhatsappRoutineDisplayLine()}`;
+            const copyReport = isRoutineDay ? `${baseReport}
+${getDailyWhatsappRoutineCopyLine()}` : baseReport;
+
+            const output = document.getElementById('dailyWhatsappResult');
+            if (output) {
+                output.innerText = displayReport;
+                output.dataset.copyText = copyReport;
+            }
+
+            setDailyWhatsappStatus('waStatusPrediksi', 'wa_prediksi', 'PREDIKSI');
+            setDailyWhatsappStatus('waStatusAlt', 'wa_link_alternatif', 'LINK ALTERNATIF');
+            setDailyWhatsappStatus('waStatusWin1', 'wa_kemenangan_1', 'KEMENANGAN 1');
+            setDailyWhatsappStatus('waStatusWin2', 'wa_kemenangan_2', 'KEMENANGAN 2');
+            updateDailyWhatsappRoutineStatus();
+        }
+
+        function loadDailyWhatsappReport() {
+            const savedDailyWa = localStorage.getItem('wukong_daily_whatsapp_report');
+            if (savedDailyWa) {
+                try {
+                    const data = JSON.parse(savedDailyWa);
+                    Object.keys(data).forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.value = data[id];
+                    });
+                } catch (e) {
+                    localStorage.removeItem('wukong_daily_whatsapp_report');
+                }
+            }
+            updateDailyWhatsappReport();
+        }
+
+        function resetDailyWhatsappReport() {
+            ['wa_prediksi', 'wa_link_alternatif', 'wa_kemenangan_1', 'wa_kemenangan_2', 'wa_rutin'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            localStorage.removeItem('wukong_daily_whatsapp_report');
+            updateDailyWhatsappReport();
+            showNotif("DAILY REPOT WHATSAPP DIRESET");
+        }
+
+
+        window.onload = function() {
+            // Load Shift
+            const savedShift = localStorage.getItem('wukong_shift') || autoDetectShift();
+            setShift(savedShift);
+
+            // Load Individual Data
+            const savedIndividual = localStorage.getItem('wukong_individual_data');
+            if (savedIndividual) {
+                const data = JSON.parse(savedIndividual);
+                for (const id in data) {
+                    if (document.getElementById(id)) {
+                        document.getElementById(id).value = data[id];
+                    }
+                }
+            }
+            updateReport();
+
+            // Load Rekapan
+            const savedRekapan = localStorage.getItem('saved_rekapan_wukong');
+            if (savedRekapan) {
+                document.getElementById('in_rekapan').value = savedRekapan;
+            }
+            updateRekapan();
+
+            document.getElementById('scatterFolderName').innerText = getScatterFolderName();
+
+            // Load Daily Repot WhatsApp
+            loadDailyWhatsappReport();
+        };
+    </script>
+</body>
+</html>
