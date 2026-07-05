@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WUKONG Daily Report Panel</title>
+    <title>Daily Report Panel</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
@@ -1512,7 +1512,7 @@
                 return value ? `${value} ✅` : "";
             };
 
-            const report = `Info : Togelup\nPerihal : Pengecekan Bot Telegram\nStaff : ${currentStaff}\nTanggal : ${getIndoDate()}\n\nLink daftar : ${getVal('in_daftar')}\nLink alternatif : ${getVal('in_alt')}\nlivechat : ${getVal('in_live')}\nfacebook : ${getVal('in_fb')}\nwhatsapp : ${getVal('in_wa')}\nRTP : ${getVal('in_rtp')}\nPromo & Bonus : ${getVal('in_promo')}\nPrediksi : ${getVal('in_prediksi')}\n\nket : Pengujian BOT tele aman tidak ada kendala.`;
+            const report = `Info : Ziatogel\nPerihal : Pengecekan Bot Telegram\nStaff : ${currentStaff}\nTanggal : ${getIndoDate()}\n\nLink daftar : ${getVal('in_daftar')}\nLink alternatif : ${getVal('in_alt')}\nlivechat : ${getVal('in_live')}\nfacebook : ${getVal('in_fb')}\nwhatsapp : ${getVal('in_wa')}\nRTP : ${getVal('in_rtp')}\nPromo & Bonus : ${getVal('in_promo')}\nPrediksi : ${getVal('in_prediksi')}\n\nket : Pengujian BOT tele aman tidak ada kendala.`;
             
             document.getElementById('reportResult').innerText = report;
             localStorage.setItem('wukong_individual_data', JSON.stringify(dataToStore));
@@ -1522,7 +1522,7 @@
             const content = document.getElementById('in_rekapan').value;
             localStorage.setItem('saved_rekapan_wukong', content);
             
-            const rekapan = `Info : Togelup\nPerihal : Rekapan Daily Report Tanggal ${getIndoDate()}\n\n${content}`;
+            const rekapan = `Info : Ziatogel\nPerihal : Rekapan Daily Report Tanggal ${getIndoDate()}\n\n${content}`;
             document.getElementById('rekapanResult').innerText = rekapan;
         }
 
@@ -1722,7 +1722,7 @@
             };
             localStorage.setItem('wukong_qris_report_data', JSON.stringify(qrisData));
 
-            const report = `Info : TogelUP\nPerihal : Deposit QRIS\nTanggal : ${getIndoUpperDate()}\n\nQRIS Minerapay\nTotal Mutasi : ${mineraMutasi} Mutasi\nTotal Pendapatan : ${formatQrisRupiah(mineraPendapatan)}\n\nQRIS VIP NST \nTotal Mutasi : ${vipMutasi} Mutasi\nTotal Pendapatan : ${formatQrisRupiah(vipPendapatan)}`;
+            const report = `Info : Ziatogel\nPerihal : Deposit QRIS\nTanggal : ${getIndoUpperDate()}\n\nQRIS Minerapay\nTotal Mutasi : ${mineraMutasi} Mutasi\nTotal Pendapatan : ${formatQrisRupiah(mineraPendapatan)}\n\nQRIS VIP NST \nTotal Mutasi : ${vipMutasi} Mutasi\nTotal Pendapatan : ${formatQrisRupiah(vipPendapatan)}`;
             document.getElementById('qrisReportResult').innerText = report;
         }
 
