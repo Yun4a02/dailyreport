@@ -3759,7 +3759,7 @@
 
                                 <div class="form-group">
                                     <label for="promptTagline">Slogan</label>
-                                    <input type="text" id="promptTagline" value="UP TERUS MOMEN TERBAIK ANDA" autocomplete="off">
+                                    <input type="text" id="promptTagline" value="JACKPOT BESAR, MOMEN ANDA BERSINAR" autocomplete="off">
                                 </div>
 
                                 <div class="form-group">
@@ -5925,6 +5925,34 @@ ${cta}`
             return result;
         }
 
+        const promptSloganIdeas = [
+            'JACKPOT BESAR, MOMEN ANDA BERSINAR',
+            'MENANG BESAR, TAMPIL LEBIH BERKELAS',
+            'SAATNYA MOMEN KEMENANGAN ANDA',
+            'KEMENANGAN PREMIUM UNTUK ANDA',
+            'RAIH MOMEN TERBAIK HARI INI',
+            'WIN BESAR, VIBES MAKIN MEWAH',
+            'HOKI DATANG, KEMENANGAN MENYALA',
+            'MOMEN CUAN PALING BERKESAN',
+            'KILAU MENANG TANPA BATAS',
+            'SETIAP PUTARAN PUNYA CERITA MENANG',
+            'JADIKAN HARI INI LEBIH BERSINAR',
+            'KEMENANGAN ANDA, GAYA PREMIUM KAMI',
+            'SENSASI MENANG YANG LEBIH MEWAH',
+            'MOMEN HOKI YANG SIAP DIABADIKAN',
+            'DARI MAIN JADI MOMEN MENANG',
+            'CUAN MENYALA, POSTER MAKIN BERKELAS',
+            'MENANGNYA NYATA, TAMPILANNYA MEWAH',
+            'HARI INI WAKTUNYA ANDA BERSINAR',
+            'JACKPOT DATANG, SEMANGAT MENYALA',
+            'KEMENANGAN BESAR DALAM SATU MOMEN'
+        ];
+
+        function getPromptSlogan(index) {
+            const i = clampNumber(index, 1, MAX_PROMPT_STYLES) - 1;
+            return promptSloganIdeas[i % promptSloganIdeas.length];
+        }
+
         function getBottomFeaturePanelPrompt(themeName, index) {
             const safeTheme = cleanText(themeName, 'tema premium pilihan saya');
             const i = clampNumber(index, 1, MAX_PROMPT_STYLES) - 1;
@@ -5982,6 +6010,7 @@ ${cta}`
             promptEls.photoStyleDesc.value = idea.photoDesc;
             promptEls.elementDesc.value = idea.elementDesc;
             promptEls.colorNote.value = idea.colorDesc;
+            promptEls.tagline.value = getPromptSlogan(ideaNo);
             if (promptEls.ideaMetaChip) promptEls.ideaMetaChip.value = `IDE #${String(idea.no).padStart(5, '0')}`;
             if (promptEls.themeMetaChip) promptEls.themeMetaChip.value = idea.theme;
             updateThemePills();
@@ -6106,7 +6135,7 @@ ${cta}`
             const formData = getFormData();
             const brand = cleanText(promptEls.brand.value, 'Ziatogel');
             const logoUrl = cleanText(promptEls.logoUrl ? promptEls.logoUrl.value : DEFAULT_LOGO_URL, DEFAULT_LOGO_URL);
-            const tagline = cleanText(promptEls.tagline.value, 'UP TERUS MOMEN TERBAIK ANDA');
+            const tagline = cleanText(promptEls.tagline.value, getPromptSlogan(ideaNo));
             const theme = cleanText(promptEls.theme.value, idea.theme);
             const photoDesc = cleanText(promptEls.photoStyleDesc.value, idea.photoDesc);
             let elementDesc = removeUserIdTextFromElement(cleanText(promptEls.elementDesc.value, idea.elementDesc), formData.userId);
@@ -6230,7 +6259,7 @@ ARAH KOMPOSISI DAN HASIL AKHIR:
 
         function resetPromptForm() {
             promptEls.brand.value = 'Ziatogel';
-            promptEls.tagline.value = 'UP TERUS MOMEN TERBAIK ANDA';
+            promptEls.tagline.value = getPromptSlogan(1);
             if (promptEls.logoUrl) {
                 const currentLogo = cleanText(promptEls.logoUrl.value, DEFAULT_LOGO_URL);
                 promptEls.logoUrl.value = currentLogo;
