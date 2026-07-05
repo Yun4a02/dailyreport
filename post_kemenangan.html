@@ -1,71 +1,10 @@
-<?php
-if (isset($_GET['download_link_alt_reference'])) {
-    // Gambar referensi untuk menu KLIK UNDUH GAMBAR.
-    // Upload file PNG ini satu folder dengan file PHP:
-    // contoh-gambar-referensi-link-alternatif.png
-    // Saat tombol KLIK UNDUH GAMBAR diklik, file inilah yang akan terdownload.
-    $downloadFileName = 'contoh-gambar-referensi-link-alternatif.png';
-    $candidateImages = [
-        __DIR__ . '/contoh-gambar-referensi-link-alternatif.png',
-        __DIR__ . '/contoh.png'
-    ];
-
-    $localImagePath = '';
-    foreach ($candidateImages as $candidateImage) {
-        if (is_file($candidateImage) && filesize($candidateImage) > 100) {
-            $localImagePath = $candidateImage;
-            break;
-        }
-    }
-
-    if ($localImagePath === '') {
-        http_response_code(404);
-        header('Content-Type: text/plain; charset=utf-8');
-        echo 'File gambar referensi belum ditemukan. Upload file contoh-gambar-referensi-link-alternatif.png satu folder dengan file PHP ini.';
-        exit;
-    }
-
-    clearstatcache(true, $localImagePath);
-    $fileSize = filesize($localImagePath);
-
-    if (function_exists('ob_get_level')) {
-        while (ob_get_level() > 0) {
-            @ob_end_clean();
-        }
-    }
-
-    header('Content-Type: image/png');
-    header('Content-Length: ' . $fileSize);
-    header('Content-Disposition: attachment; filename="' . $downloadFileName . '"');
-    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-    header('Pragma: no-cache');
-    readfile($localImagePath);
-    exit;
-}
-// ========================================================
-// POST KEMENANGAN + GENERATOR PROMPT
-// Update tampilan rapi + preview contoh kalimat dari data form
-// ========================================================
-
-ob_start();
-date_default_timezone_set('Asia/Bangkok');
-
-session_start();
-if (!isset($_SESSION['login'])) {
-    header("Location: login.php");
-    exit;
-}
-
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-?>
+<!-- FINAL CLEAN: PHP header/download/session block removed so code will not appear on static hosting. -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POST KEMENANGAN</title>
+    <title>POST KEMENANGAN | ZIA TOGEL</title>
     <style>
         :root {
             --bg-main: #060708;
@@ -3827,23 +3766,15 @@ ini_set('display_errors', 1);
                                 <div class="form-group link-alt-brand-select-group">
                                     <label for="linkAltBrand">Nama Brand</label>
                                     <select id="linkAltBrand" class="link-alt-native-brand-select" autocomplete="off" aria-hidden="true" tabindex="-1">
-                                        <option value="Ziatogel" selected>Ziatogel</option>
-                                        <option value="HOME TOGEL">HOME TOGEL</option>
-                                        <option value="MARIA TOGEL">MARIA TOGEL</option>
-                                        <option value="LUNATOGEL">LUNATOGEL</option>
-                                        <option value="ZIA TOGEL">ZIA TOGEL</option>
+                                        <option value="ZIA TOGEL" selected>ZIA TOGEL</option>
                                     </select>
                                     <div class="link-alt-custom-brand" id="linkAltBrandCustom">
                                         <button type="button" class="link-alt-brand-trigger" id="linkAltBrandTrigger" aria-haspopup="listbox" aria-expanded="false">
-                                            <span id="linkAltBrandText">Ziatogel</span>
+                                            <span id="linkAltBrandText">ZIA TOGEL</span>
                                             <span class="link-alt-brand-arrow" aria-hidden="true">▾</span>
                                         </button>
                                         <div class="link-alt-brand-panel" id="linkAltBrandPanel" role="listbox" aria-label="Pilih Nama Brand">
-                                            <button type="button" class="link-alt-brand-option selected" data-value="Ziatogel" role="option" aria-selected="true">Ziatogel</button>
-                                            <button type="button" class="link-alt-brand-option" data-value="HOME TOGEL" role="option" aria-selected="false">HOME TOGEL</button>
-                                            <button type="button" class="link-alt-brand-option" data-value="MARIA TOGEL" role="option" aria-selected="false">MARIA TOGEL</button>
-                                            <button type="button" class="link-alt-brand-option" data-value="LUNATOGEL" role="option" aria-selected="false">LUNATOGEL</button>
-                                            <button type="button" class="link-alt-brand-option" data-value="ZIA TOGEL" role="option" aria-selected="false">ZIA TOGEL</button>
+                                            <button type="button" class="link-alt-brand-option selected" data-value="ZIA TOGEL" role="option" aria-selected="true">ZIA TOGEL</button>
                                         </div>
                                     </div>
                                 </div>
@@ -3879,7 +3810,7 @@ ini_set('display_errors', 1);
                             <div class="link-alt-textarea-grid">
                                 <div class="form-group">
                                     <label for="linkAltPromoText">Kata-Kata Promosi</label>
-                                    <textarea id="linkAltPromoText">Cobain sekarang lewat LINK ALTERNATIF resmi Ziatogel yang lebih cepat, aman, dan mudah diakses.</textarea>
+                                    <textarea id="linkAltPromoText">Gunakan LINK ALTERNATIF resmi ZIA TOGEL untuk akses yang lebih praktis, stabil, dan nyaman setiap saat.</textarea>
                                 </div>
 
                                 <div class="form-group">
@@ -3921,14 +3852,6 @@ ini_set('display_errors', 1);
 
             <div class="card-body quotes-postingan-body" id="quotesPostinganBody">
                 <div class="quotes-posting-grid">
-                    <div class="quotes-post-box">
-                        <div class="quotes-post-title">☯ TWITTER &amp; FACEBOOK</div>
-                        <div class="quotes-post-tools">
-                            <button type="button" id="quoteTwitterEditBtn">✏️ Edit</button>
-                            <button type="button" id="quoteTwitterCopyBtn">📋 Copy</button>
-                        </div>
-                        <textarea id="quoteTwitterFacebook" class="quotes-post-textarea" readonly>Yth Member Setia Ziatogel, berikut update informasi pilihan yang kami sediakan. Gunakan sebagai hiburan dan referensi ringan. Salam sukses selalu di Ziatogel</textarea>
-                    </div>
 
                     <div class="quotes-post-box">
                         <div class="quotes-post-title">🎲 KATA PREDIKSI</div>
@@ -3947,11 +3870,11 @@ ini_set('display_errors', 1);
                             <div class="quotes-link-lock-row">
                                 <div class="quotes-link-field">
                                     <label for="quoteLinkAltUrl1">Link 1</label>
-                                    <input type="text" id="quoteLinkAltUrl1" class="quotes-link-url-input is-locked" value="https://dkwl.b-cdn.net/Ziatogel-kl1" readonly autocomplete="off">
+                                    <input type="text" id="quoteLinkAltUrl1" class="quotes-link-url-input is-locked" value="https://sorty.bio/ziatogel-kl1" readonly autocomplete="off">
                                 </div>
                                 <div class="quotes-link-field">
                                     <label for="quoteLinkAltUrl2">Link 2</label>
-                                    <input type="text" id="quoteLinkAltUrl2" class="quotes-link-url-input is-locked" value="https://dkwl.b-cdn.net/Ziatogel-kl2" readonly autocomplete="off">
+                                    <input type="text" id="quoteLinkAltUrl2" class="quotes-link-url-input is-locked" value="https://sorty.bio/ziatogel-kl2" readonly autocomplete="off">
                                 </div>
                                 <button type="button" class="quotes-random-btn quotes-link-lock-btn" id="quoteLinkAltUrlLockBtn" aria-pressed="true" title="Link terkunci, klik untuk buka kunci">🔒 Lock</button>
                             </div>
@@ -6550,124 +6473,18 @@ ARAH KOMPOSISI DAN HASIL AKHIR:
             ];
 
             const linkAltPromoAngles = [
-                "Link alternatif resmi siap membantu akses lebih cepat, aman, dan nyaman.",
-                "Gunakan jalur alternatif premium untuk masuk tanpa ribet dan tetap stabil.",
-                "Akses cadangan terpercaya siap digunakan saat link utama sulit dibuka.",
-                "Satu klik menuju akses alternatif yang lebih praktis, rapi, dan responsif.",
-                "Tetap terhubung dengan link alternatif resmi yang aman dan mudah dibaca.",
-                "Masuk lebih lancar lewat jalur alternatif modern dengan tampilan premium.",
-                "Solusi akses cepat untuk pengalaman yang lebih nyaman setiap saat.",
-                "Link alternatif terbaru hadir untuk menjaga akses tetap stabil dan terpercaya.",
-                "Nikmati akses lebih mulus dengan jalur alternatif yang ringan dan responsif.",
-                "Pilihan akses cadangan terbaik untuk masuk cepat tanpa banyak pilihan.",
-                "Jalur alternatif resmi membantu kamu tetap online dengan lebih nyaman.",
-                "Akses praktis, tampilan elegan, dan rasa aman dalam satu link alternatif.",
-                "Gunakan link alternatif terpercaya untuk pengalaman akses yang lebih tenang.",
-                "Masuk kapan saja dengan akses alternatif yang cepat, jelas, dan profesional.",
-                "Link alternatif premium hadir sebagai solusi saat akses utama sedang padat.",
-                "Tetap aman saat masuk dengan jalur alternatif resmi yang sudah disiapkan.",
-                "Akses lebih cepat, tampilan lebih mewah, dan navigasi lebih mudah.",
-                "Jangan biarkan kendala akses menghambat, gunakan link alternatif resmi.",
-                "Link alternatif modern siap menemani akses kamu dengan lebih lancar.",
-                "Masuk tanpa hambatan lewat jalur cadangan yang aman dan terpercaya.",
-                "Akses utama bermasalah bukan halangan, link alternatif siap membantu.",
-                "Gunakan jalur resmi untuk akses yang stabil, cepat, dan anti ribet.",
-                "Link alternatif ini dibuat untuk pengalaman akses yang lebih nyaman.",
-                "Tetap masuk dengan mudah melalui akses cadangan yang responsif.",
-                "Jalur alternatif terpercaya, solusi cepat untuk akses yang lebih lancar.",
-                "Akses lebih percaya diri dengan link alternatif resmi dan tampilan premium.",
-                "Masuk lebih praktis melalui link alternatif yang rapi dan mudah digunakan.",
-                "Link alternatif aman membantu kamu tetap terhubung tanpa kebingungan.",
-                "Saat link utama sulit dibuka, jalur alternatif siap jadi solusi.",
-                "Nikmati akses cadangan yang cepat, modern, dan tetap profesional.",
-                "Link alternatif resmi memberi kemudahan akses dengan nuansa premium.",
-                "Jalur masuk cadangan yang stabil untuk pengalaman lebih nyaman.",
-                "Akses lebih ringan dan cepat lewat link alternatif yang sudah disiapkan.",
-                "Tetap lancar meski akses ramai dengan bantuan link alternatif resmi.",
-                "Gunakan akses alternatif untuk masuk lebih simpel dan terpercaya.",
-                "Link alternatif premium dirancang agar akses tetap cepat dan mudah.",
-                "Masuk lebih tenang dengan jalur alternatif yang aman dan jelas.",
-                "Akses cadangan siap pakai untuk pengalaman yang lebih stabil.",
-                "Link alternatif resmi menjadi solusi cepat saat koneksi menuju situs padat.",
-                "Tetap nyaman mengakses dengan jalur alternatif hijau-biru yang elegan.",
-                "Gunakan link alternatif terbaru untuk akses yang lebih responsif.",
-                "Masuk tanpa repot dengan jalur akses cadangan yang terpercaya.",
-                "Link alternatif membantu menjaga akses tetap lancar dan mudah digunakan.",
-                "Akses premium lebih praktis dengan tombol link alternatif yang jelas.",
-                "Jalur alternatif cepat, aman, dan siap digunakan kapan saja.",
-                "Tetap fokus tanpa kendala akses, gunakan link alternatif resmi.",
-                "Link alternatif modern memberi kesan aman, stabil, dan profesional.",
-                "Masuk lebih mulus dengan jalur cadangan yang ringan dan responsif.",
-                "Akses cepat kini lebih mudah lewat link alternatif terpercaya.",
-                "Gunakan jalur alternatif untuk pengalaman masuk yang lebih nyaman.",
-                "Link alternatif resmi menjaga akses tetap terbuka dengan cara yang praktis.",
-                "Jalur cadangan premium siap membantu akses lebih cepat dan rapi.",
-                "Akses nyaman dimulai dari link alternatif yang aman dan terpercaya.",
-                "Satu tombol, satu jalur cepat, akses alternatif siap digunakan.",
-                "Link alternatif terbaru membuat proses masuk terasa lebih ringan.",
-                "Tetap terhubung dengan akses cadangan yang stabil dan modern.",
-                "Gunakan jalur alternatif resmi untuk masuk lebih aman dan lancar.",
-                "Akses praktis tanpa banyak pilihan lewat link alternatif premium.",
-                "Link alternatif membantu kamu masuk lebih cepat saat akses utama penuh.",
-                "Masuk dengan percaya diri melalui akses alternatif yang terpercaya.",
-                "Jalur alternatif elegan, cepat, dan mudah dibaca untuk semua pengguna.",
-                "Akses cadangan resmi siap menjaga koneksi tetap nyaman.",
-                "Link alternatif premium memberi solusi masuk yang lebih simpel.",
-                "Tetap lancar, tetap aman, gunakan akses alternatif resmi.",
-                "Masuk lebih nyaman dengan jalur link alternatif yang sudah diperbarui.",
-                "Akses lebih fleksibel melalui link alternatif yang ringan dan responsif.",
-                "Link alternatif terpercaya siap menjadi pintu masuk cadangan terbaik.",
-                "Gunakan akses alternatif untuk pengalaman yang lebih stabil setiap waktu.",
-                "Jalur cepat resmi hadir untuk memudahkan akses tanpa hambatan.",
-                "Link alternatif aman memberi rasa tenang saat akses utama sulit dibuka.",
-                "Masuk praktis dengan tampilan premium dan tombol akses yang jelas.",
-                "Akses cadangan modern siap dipakai kapan pun dibutuhkan.",
-                "Link alternatif resmi membuat akses tetap mudah, cepat, dan rapi.",
-                "Gunakan jalur alternatif agar pengalaman masuk tetap nyaman.",
-                "Akses lebih lancar dengan dukungan link alternatif yang terpercaya.",
-                "Link alternatif premium membantu akses tetap responsif di berbagai kondisi.",
-                "Masuk tanpa panik saat link utama padat, jalur alternatif siap membantu.",
-                "Jalur alternatif resmi memberikan akses yang lebih jelas dan profesional.",
-                "Akses cepat, aman, dan elegan dalam satu link alternatif terpercaya.",
-                "Link alternatif terbaru hadir untuk pengalaman masuk yang lebih halus.",
-                "Gunakan akses cadangan premium untuk koneksi yang lebih stabil.",
-                "Masuk lebih ringan dengan link alternatif yang mudah digunakan.",
-                "Jalur alternatif aman membuat akses tetap nyaman dan terpercaya.",
-                "Link alternatif resmi siap menjaga akses tetap aktif dan responsif.",
-                "Akses cadangan cepat untuk pengalaman masuk yang lebih praktis.",
-                "Tetap nyaman, tetap lancar, gunakan link alternatif resmi.",
-                "Link alternatif premium menjadi pilihan tepat saat akses utama terkendala.",
-                "Masuk cepat lewat jalur alternatif dengan desain modern dan meyakinkan.",
-                "Akses resmi lebih mudah dengan tombol link alternatif yang jelas.",
-                "Gunakan link alternatif terpercaya agar proses masuk tetap lancar.",
-                "Jalur cadangan modern memberi pengalaman akses yang lebih tenang.",
-                "Link alternatif siap membantu akses tetap stabil tanpa banyak kendala.",
-                "Akses cepat dan aman kini lebih praktis lewat link alternatif resmi.",
-                "Masuk lebih mudah dengan jalur alternatif premium yang responsif.",
-                "Link alternatif resmi memberi solusi akses yang rapi dan profesional.",
-                "Tetap terhubung kapan saja lewat akses alternatif yang aman.",
-                "Jalur alternatif terpercaya hadir untuk akses yang lebih cepat.",
-                "Gunakan link alternatif terbaru untuk pengalaman masuk yang lebih nyaman.",
-                "Akses cadangan premium siap memberi kenyamanan di setiap klik.",
-                "Link alternatif resmi, solusi modern untuk akses cepat dan stabil.",
-                "Pilih jalur alternatif resmi agar akses tetap ringan, cepat, dan percaya diri.",
-                "Masuk lewat link alternatif dengan tampilan premium dan alur yang lebih jelas.",
-                "Akses cadangan dibuat lebih rapi agar pengguna tidak bingung saat link utama padat.",
-                "Link alternatif terbaru siap menjadi pintu masuk cepat dengan visual brand yang lebih meyakinkan.",
-                "Satu jalur praktis untuk akses resmi yang lebih mudah dibuka dan lebih nyaman dilihat.",
-                "Gunakan akses alternatif saat butuh jalur masuk yang stabil, modern, dan aman.",
-                "Link alternatif resmi membantu menjaga pengalaman akses tetap halus dari HP maupun desktop.",
-                "Akses lebih praktis, tombol lebih jelas, dan tampilan brand lebih premium.",
-                "Jalur alternatif ini disiapkan untuk pengalaman masuk yang cepat tanpa tampilan membingungkan.",
-                "Buka akses resmi dengan tampilan link alternatif yang elegan dan mudah dikenali.",
-                "Masuk lewat akses cadangan yang terasa lebih cepat, lebih rapi, dan lebih terpercaya.",
-                "Link alternatif premium hadir dengan gaya visual yang kuat dan pesan yang mudah dipahami.",
-                "Tetap terhubung dengan jalur alternatif yang clean, responsif, dan siap digunakan.",
-                "Akses resmi lebih nyaman saat desain link alternatif tampil jelas dan tidak berantakan.",
-                "Gunakan jalur alternatif untuk akses yang tetap aktif, ringan, dan meyakinkan.",
-                "Link alternatif siap menjadi solusi saat akses utama sedang ramai atau sulit dibuka.",
-                "Akses lebih tenang melalui jalur resmi dengan tampilan premium sesuai brand.",
-                "Jalur alternatif terbaru memberi kesan cepat, aman, dan profesional dalam satu klik."
+                "Link alternatif Ziatogel hadir sebagai jalur akses resmi yang lebih praktis dan mudah digunakan.",
+                "Gunakan akses cadangan Ziatogel untuk masuk dengan tampilan yang rapi, cepat, dan nyaman.",
+                "Dua jalur alternatif resmi siap membantu member tetap terhubung tanpa kebingungan.",
+                "Akses Ziatogel lebih fleksibel melalui link alternatif yang sudah diperbarui.",
+                "Link cadangan resmi memudahkan akses saat jalur utama sedang padat atau sulit dibuka.",
+                "Masuk lebih nyaman lewat akses alternatif Ziatogel yang simpel dan responsif.",
+                "Jalur alternatif resmi memberi kemudahan akses dengan nuansa modern dan terpercaya.",
+                "Pilih akses yang paling lancar di jaringan kamu dan lanjutkan aktivitas dengan tenang.",
+                "Link alternatif Ziatogel dibuat agar member memiliki pilihan akses yang lebih stabil.",
+                "Tetap terhubung melalui link resmi yang jelas, aman, dan mudah diingat.",
+                "Akses cadangan Ziatogel siap dipakai kapan saja saat dibutuhkan.",
+                "Gunakan link alternatif resmi untuk pengalaman masuk yang lebih ringan dan praktis."
             ];
 
 
@@ -6931,7 +6748,7 @@ ARAH KOMPOSISI DAN HASIL AKHIR:
             }
 
             function linkAltNormalizeBrand(value) {
-                return linkAltClean(value, 'Ziatogel');
+                return 'ZIA TOGEL';
             }
 
             function linkAltCompactBrand(brand) {
@@ -6942,8 +6759,24 @@ ARAH KOMPOSISI DAN HASIL AKHIR:
                 return linkAltCompactBrand(brand).replace(/\s+/g, ' ').toUpperCase();
             }
 
-            function linkAltBrandSlogan(brand) {
-                return 'AKSES RESMI ' + linkAltSearchBrand(brand) + ' LEBIH CEPAT, AMAN, DAN MUDAH';
+            const linkAltSloganPhrases = [
+                'AKSES RESMI {BRAND} LEBIH CEPAT, AMAN, DAN MUDAH',
+                '{BRAND} LINK ALTERNATIF RESMI, STABIL, DAN SIAP DIAKSES',
+                'MASUK LEBIH MUDAH BERSAMA {BRAND}',
+                'JALUR RESMI {BRAND} UNTUK AKSES LEBIH LANCAR',
+                '{BRAND} AKSES CEPAT, TAMPILAN PREMIUM, DAN AMAN',
+                'AKSES CADANGAN {BRAND} YANG PRAKTIS DAN TERPERCAYA',
+                'TETAP TERHUBUNG DENGAN LINK RESMI {BRAND}',
+                '{BRAND} AKSES ALTERNATIF CEPAT TANPA RIBET',
+                'JALUR ALTERNATIF {BRAND} YANG RAPI DAN RESPONSIF',
+                'AKSES {BRAND} LEBIH NYAMAN DI SEMUA DEVICE'
+            ];
+
+            function linkAltBrandSlogan(brand, themeNumber, forceRandom) {
+                const displayBrand = linkAltSearchBrand(brand);
+                const seed = forceRandom ? Math.floor(Math.random() * 233280) : linkAltSeedNumber(themeNumber || (linkAltEls.themeNumber ? linkAltEls.themeNumber.value : 1), 157);
+                const text = linkAltPickToken(linkAltSloganPhrases, seed + 17) || 'AKSES RESMI {BRAND} LEBIH CEPAT, AMAN, DAN MUDAH';
+                return text.replace(/\{BRAND\}/g, displayBrand);
             }
 
             function linkAltReplaceBrandTokens(textValue, brand) {
@@ -6953,96 +6786,32 @@ ARAH KOMPOSISI DAN HASIL AKHIR:
                 return safeText
                     .replace(/TGL\s*UP/gi, displayBrand)
                     .replace(/Ziatogel/gi, compactBrand)
-                    .replace(/UP\s+TERUS\s+MOMEN\s+TERBAIK\s+ANDA/gi, linkAltBrandSlogan(brand))
+                    .replace(/UP\s+TERUS\s+MOMEN\s+TERBAIK\s+ANDA/gi, linkAltBrandSlogan(brand, linkAltEls.themeNumber ? linkAltEls.themeNumber.value : 1, false))
                     .replace(/\[BRAND\]/gi, displayBrand)
                     .replace(/\[BRAND_SEARCH\]/gi, linkAltSearchBrand(brand))
-                    .replace(/\[BRAND_SLOGAN\]/gi, linkAltBrandSlogan(brand));
+                    .replace(/\[BRAND_SLOGAN\]/gi, linkAltBrandSlogan(brand, linkAltEls.themeNumber ? linkAltEls.themeNumber.value : 1, false));
             }
 
             function linkAltNormalizeColor(value) {
                 return linkAltClean(value, 'green dan blue wajib dominan, neon green, electric blue, cyan glow, emerald teal, deep blue navy green glossy');
             }
 
-            const LINK_ALT_DEFAULT_BRAND = 'Ziatogel';
+            const LINK_ALT_DEFAULT_BRAND = 'ZIA TOGEL';
             const LINK_ALT_BRAND_PRESETS = {
-                'Ziatogel': {
-                    dominant: 'green dan blue',
-                    colorBase: 'green dan Blue wajib dominan, neon green, electric blue, cyan glow, emerald teal, deep blue navy green glossy',
-                    promos: [
-                        '[BRAND] kasih jalur LINK ALTERNATIF resmi dengan akses lebih cepat, tampilan green-blue premium, dan tombol yang jelas.',
-                        'Buka akses [BRAND] lewat LINK ALTERNATIF terbaru yang stabil, ringan, dan siap dipakai kapan saja.',
-                        'LINK ALTERNATIF [BRAND] hadir dengan nuansa neon green dan electric blue agar akses terlihat lebih modern dan meyakinkan.',
-                        'Gunakan jalur resmi [BRAND] untuk akses lebih lancar, visual lebih clean, dan pengalaman lebih nyaman.',
-                        'Akses [BRAND] makin mudah lewat link alternatif green-blue yang responsif dan tidak bikin bingung.',
-                        'Tombol LINK ALTERNATIF [BRAND] dibuat menonjol agar pengguna langsung tahu jalur akses resmi yang harus dipilih.',
-                        '[BRAND] siap temani akses kamu dengan jalur alternatif yang rapi, aman, dan cepat dibuka.',
-                        'Pilih LINK ALTERNATIF [BRAND] saat akses utama padat, tetap terhubung dengan tampilan premium.',
-                        'Akses resmi [BRAND] terasa lebih mulus lewat desain link alternatif cyber green-blue.',
-                        'Masuk lebih praktis bersama [BRAND] melalui jalur alternatif yang modern dan terpercaya.'
-                    ]
-                },
-                'HOME TOGEL': {
-                    dominant: 'yellow dan blue',
-                    colorBase: 'yellow dan blue wajib dominan, neon yellow, dope blue, abstrak yellow, deep blue glossy',
-                    promos: [
-                        'LINK ALTERNATIF [BRAND] dibuat jelas dengan aksen neon yellow dan deep blue agar akses terasa lebih mudah.',
-                        'Gunakan jalur alternatif [BRAND] untuk akses resmi yang cepat, rapi, dan nyaman dilihat.',
-                        '[BRAND] hadirkan akses cadangan premium dengan nuansa yellow-blue yang terang dan meyakinkan.',
-                        'Saat link utama sulit dibuka, LINK ALTERNATIF [BRAND] siap jadi jalan masuk yang praktis.',
-                        'Akses [BRAND] lebih ringan lewat link alternatif resmi dengan tombol CTA yang mudah ditemukan.',
-                        'Nuansa neon yellow dan dope blue bikin jalur alternatif [BRAND] tampil kuat, modern, dan mudah dikenali.',
-                        'Pilih link alternatif [BRAND] untuk akses cepat tanpa ribet dan tampilan yang tetap premium.',
-                        '[BRAND] memberi jalur akses cadangan yang stabil, jelas, dan siap digunakan kapan saja.',
-                        'LINK ALTERNATIF [BRAND] membantu akses tetap lancar dengan visual yellow-blue yang fresh.',
-                        'Masuk lebih nyaman lewat akses resmi [BRAND] yang clean, terang, dan profesional.'
-                    ]
-                },
-                'MARIA TOGEL': {
-                    dominant: 'gold dan black metal',
-                    colorBase: 'gold dan black metal wajib dominan, neon Gold, electric orange, gold glow, metalic deep gray',
-                    promos: [
-                        'LINK ALTERNATIF [BRAND] tampil mewah dengan gold-black metal untuk akses resmi yang lebih berkelas.',
-                        'Gunakan akses cadangan [BRAND] dengan nuansa neon gold dan electric orange yang elegan.',
-                        '[BRAND] hadirkan jalur alternatif premium, kuat, dan mudah dikenali lewat visual gold glow.',
-                        'Masuk lebih nyaman melalui LINK ALTERNATIF [BRAND] yang stabil, rapi, dan terlihat eksklusif.',
-                        'Akses resmi [BRAND] kini lebih praktis lewat jalur alternatif black metal glossy.',
-                        'Tombol LINK ALTERNATIF [BRAND] dibuat standout dengan warna gold agar langsung menarik perhatian.',
-                        'Pilih jalur alternatif [BRAND] saat butuh akses cepat dengan tampilan mewah dan terpercaya.',
-                        '[BRAND] memberi pengalaman akses cadangan yang premium, clean, dan tidak membingungkan.',
-                        'LINK ALTERNATIF [BRAND] siap digunakan dengan aura gold metal yang kuat dan profesional.',
-                        'Akses [BRAND] terasa lebih elegan lewat desain link alternatif neon gold yang tajam.'
-                    ]
-                },
-                'LUNATOGEL': {
-                    dominant: 'red dan silver',
-                    colorBase: 'red dan silver wajib dominan, Neon silver red, shadow red, carbon 4K silver, Dope red',
-                    promos: [
-                        'LINK ALTERNATIF [BRAND] hadir dengan red-silver premium untuk akses yang cepat dan mudah dikenali.',
-                        'Gunakan jalur alternatif [BRAND] dengan nuansa shadow red dan carbon silver yang kuat.',
-                        '[BRAND] menyiapkan akses cadangan resmi agar pengguna tetap masuk dengan nyaman.',
-                        'Akses [BRAND] lebih praktis lewat LINK ALTERNATIF bergaya dope red dan silver glossy.',
-                        'Saat akses utama padat, jalur alternatif [BRAND] siap membantu dengan tampilan tegas dan modern.',
-                        'Tombol LINK ALTERNATIF [BRAND] dibuat menyala dengan red-silver agar mudah dipilih.',
-                        'Pilih link alternatif [BRAND] untuk akses yang stabil, rapi, dan terlihat profesional.',
-                        '[BRAND] memberi jalur masuk cadangan dengan gaya carbon 4K silver yang premium.',
-                        'LINK ALTERNATIF [BRAND] menjaga akses tetap lancar lewat visual red glow yang meyakinkan.',
-                        'Masuk lebih nyaman bersama [BRAND] melalui jalur resmi red-silver yang responsif.'
-                    ]
-                },
                 'ZIA TOGEL': {
-                    dominant: 'blue dan yellow orange',
-                    colorBase: 'blue dan yellow orange wajib dominan, neon blue, electric orange, metalic dope yeloow, deep blue',
+                    dominant: 'blue dope dan orange',
+                    colorBase: 'blue dope dan orange wajib dominan, neon blue, electric orange, cyan glow, deep navy glossy',
                     promos: [
-                        'LINK ALTERNATIF [BRAND] tampil cerah dengan neon blue dan electric orange untuk akses lebih praktis.',
-                        'Gunakan akses cadangan [BRAND] yang rapi, cepat, dan mudah ditemukan kapan saja.',
-                        '[BRAND] hadirkan jalur alternatif resmi dengan deep blue dan yellow-orange yang eye-catching.',
-                        'Masuk lebih nyaman lewat LINK ALTERNATIF [BRAND] yang stabil dan terlihat modern.',
+                        'LINK ALTERNATIF [BRAND] tampil modern dengan blue dope dan electric orange untuk akses lebih praktis.',
+                        'Gunakan akses cadangan [BRAND] yang rapi, cepat, aman, dan mudah ditemukan kapan saja.',
+                        '[BRAND] hadirkan jalur alternatif resmi dengan deep blue dan orange yang eye-catching.',
+                        'Masuk lebih nyaman lewat LINK ALTERNATIF [BRAND] yang stabil dan terlihat premium.',
                         'Akses [BRAND] makin jelas dengan tombol alternatif blue-orange yang menonjol.',
                         'Pilih link alternatif [BRAND] saat butuh akses resmi yang ringan dan responsif.',
-                        '[BRAND] memberi solusi akses cadangan dengan visual neon blue yang clean dan premium.',
+                        '[BRAND] memberi solusi akses cadangan dengan visual neon blue yang clean dan profesional.',
                         'LINK ALTERNATIF [BRAND] membantu pengguna tetap terhubung melalui jalur yang aman dan mudah dibuka.',
-                        'Desain blue-yellow orange membuat akses alternatif [BRAND] terlihat fresh dan profesional.',
-                        'Akses resmi [BRAND] siap dibuka lewat jalur alternatif yang lebih jelas dan meyakinkan.'
+                        'Desain blue dope-orange membuat akses alternatif [BRAND] terlihat fresh dan meyakinkan.',
+                        'Akses resmi [BRAND] siap dibuka lewat jalur alternatif yang lebih jelas dan cepat.'
                     ]
                 }
             };
@@ -7064,13 +6833,7 @@ ARAH KOMPOSISI DAN HASIL AKHIR:
             ];
 
             function linkAltBrandKey(value) {
-                const raw = String(value || '').replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim().toUpperCase();
-                if (raw.indexOf('HOME') !== -1) return 'HOME TOGEL';
-                if (raw.indexOf('MARIA') !== -1) return 'MARIA TOGEL';
-                if (raw.indexOf('LUNA') !== -1) return 'LUNATOGEL';
-                if (raw.indexOf('ZIA') !== -1) return 'ZIA TOGEL';
-                if (raw.indexOf('TGL') !== -1 || raw.indexOf('UP') !== -1) return 'Ziatogel';
-                return LINK_ALT_DEFAULT_BRAND;
+                return 'ZIA TOGEL';
             }
 
             function syncLinkAltBrandDropdownLabel() {
@@ -7321,7 +7084,7 @@ ARAH KOMPOSISI DAN HASIL AKHIR:
                 const combo = linkAltCombo(number);
                 const brand = linkAltNormalizeBrand(linkAltEls.brand.value);
                 const brandSearch = linkAltSearchBrand(brand);
-                const brandSlogan = linkAltBrandSlogan(brand);
+                const brandSlogan = linkAltBrandSlogan(brand, number, false);
                 const logo = linkAltClean(linkAltEls.logoUrl ? linkAltEls.logoUrl.value : 'https://cdn.areabermain.club/assets/cdn/az5/2026/05/18/20260518/8ef6016ab3fa766bd71ec843e806e6d4/logo-up-mini-1.png', 'https://cdn.areabermain.club/assets/cdn/az5/2026/05/18/20260518/8ef6016ab3fa766bd71ec843e806e6d4/logo-up-mini-1.png');
                 const colors = linkAltNormalizeColor(linkAltEls.color.value);
                 const promoText = linkAltReplaceBrandTokens(linkAltClean(linkAltEls.promoText.value, combo.promo), brand);
@@ -7415,7 +7178,7 @@ ARAH KOMPOSISI DAN HASIL AKHIR:
             }
 
             function resetLinkAltGenerator() {
-                linkAltEls.brand.value = 'Ziatogel';
+                linkAltEls.brand.value = 'ZIA TOGEL';
                 if (linkAltEls.logoUrl) linkAltEls.logoUrl.value = 'https://cdn.areabermain.club/assets/cdn/az5/2026/05/18/20260518/8ef6016ab3fa766bd71ec843e806e6d4/logo-up-mini-1.png';
                 linkAltEls.linkUrl.value = '';
                 linkAltEls.themeNumber.value = '1';
@@ -7623,9 +7386,6 @@ ARAH KOMPOSISI DAN HASIL AKHIR:
             const quoteEls = {
                 body: document.getElementById('quotesPostinganBody'),
                 toggle: document.getElementById('toggleQuotesPostingan'),
-                twitterText: document.getElementById('quoteTwitterFacebook'),
-                twitterEdit: document.getElementById('quoteTwitterEditBtn'),
-                twitterCopy: document.getElementById('quoteTwitterCopyBtn'),
                 prediksiCounter: document.getElementById('quotePrediksiCounter'),
                 prediksiText: document.getElementById('quotePrediksiText'),
                 prediksiRandom: document.getElementById('quotePrediksiRandomBtn'),
@@ -7646,77 +7406,77 @@ ARAH KOMPOSISI DAN HASIL AKHIR:
             const QUOTES_MAX_VARIATION = 5000;
             const QUOTES_POSTINGAN_COLLAPSE_KEY = 'quotesPostinganCollapsed';
             const QUOTES_POSTINGAN_COLLAPSE_COOKIE = 'quotesPostinganCollapsed';
-            const QUOTES_DEFAULT_LINK_URLS = ['https://dkwl.b-cdn.net/Ziatogel-kl1', 'https://dkwl.b-cdn.net/Ziatogel-kl2'];
+            const QUOTES_DEFAULT_LINK_URLS = ['https://sorty.bio/ziatogel-kl1', 'https://sorty.bio/ziatogel-kl2'];
             let quotePrediksiCurrentNumber = 1;
             let quoteLinkAltCurrentNumber = 1;
 
             const prediksiOpeners = [
-                'Cari yang Jitu Nggak Perlu Mahal!',
-                'Prediksi bagus nggak harus bikin kantong gelisah!',
-                'Pilihan jitu bisa dicari dengan cara santai!',
-                'Jangan asal tebak sebelum lihat inspirasi hari ini!',
-                'Cari referensi pilihan cukup dari satu tempat!',
-                'Momen hoki jangan dibiarkan lewat begitu saja!',
-                'Prediksi fresh sudah siap buat kamu cek!',
-                'Feeling tajam butuh bahan bacaan yang mantap!',
-                'Pilihan pilihan hari ini sudah menunggu!',
-                'Jangan ragu cek inspirasi pilihan terbaru!',
-                'Cari yang mantap nggak perlu muter-muter!',
-                'Saatnya intip pilihan pilihan dengan santai!',
-                'Prediksi hari ini siap nemenin feeling kamu!',
-                'Peluang bagus dimulai dari pilihan yang tepat!',
-                'Pilihan berkelas bisa datang dari feeling sederhana!',
-                'Jangan sampai terlambat membaca peluang hari ini!',
-                'Siapkan insting dan pilih pilihan dengan tenang!',
-                'Inspirasi jitu sudah ready buat member setia!',
-                'Cek dulu sebelum menentukan pilihan andalan!',
-                'Prediksi pilihan bisa jadi awal momen hoki!'
+                'Prediksi terbaru sudah siap kamu pantau hari ini!',
+                'Inspirasi angka hari ini hadir dengan susunan lebih fresh!',
+                'Saatnya cek referensi pilihan sebelum menentukan langkah!',
+                'Bahan prediksi hari ini sudah dirangkum lebih rapi!',
+                'Cek peluang terbaru dan gunakan feeling terbaikmu!',
+                'Referensi pilihan sudah siap menemani momen hari ini!',
+                'Jangan lewatkan update prediksi yang sudah disiapkan!',
+                'Pantau dulu inspirasinya, lalu pilih dengan tenang!',
+                'Prediksi fresh bisa jadi teman baca sebelum menentukan pilihan!',
+                'Hari ini waktunya melihat peluang dari sudut baru!',
+                'Racikan inspirasi pilihan sudah siap untuk member setia!',
+                'Baca dulu referensinya agar pilihan makin percaya diri!',
+                'Pilihan hari ini hadir dengan nuansa baru dan lebih mantap!',
+                'Siapkan insting terbaik sebelum masuk ke pilihan utama!',
+                'Update prediksi hari ini jangan sampai terlewat!',
+                'Inspirasi ringan bisa jadi awal feeling yang lebih tajam!',
+                'Cek susunan pilihan terbaru dan tetap main dengan bijak!',
+                'Pantau peluang hari ini sebelum menentukan angka andalan!',
+                'Referensi terbaru sudah hadir untuk menemani keputusanmu!',
+                'Prediksi hari ini siap memberi arah baru untuk feeling kamu!'
             ];
 
             const prediksiAngles = [
-                'Mampir sekarang atau tertinggal momen hoki hari ini.',
-                'Cek sekarang, siapa tahu ini jadi awal rezeki besar.',
-                'Jangan tunggu nanti, feeling bagus kadang datang sekali.',
-                'Ambil momennya, tajamkan feeling, lalu tentukan pilihan.',
-                'Baca dulu, pilih santai, dan semoga hasilnya maksimal.',
-                'Gunakan feeling terbaik sebelum menentukan pilihan pilihan.',
-                'Kesempatan emas jangan dibiarkan lewat begitu saja.',
-                'Pantau update-nya dan jangan sampai ketinggalan info penting.',
-                'Makin cepat cek, makin siap menentukan pilihan berikutnya.',
-                'Datang, baca, pilih, dan semoga hoki berpihak hari ini.',
-                'Jangan biarkan pilihan hoki lewat tanpa kamu coba cek.',
-                'Mampir sebentar, siapa tahu ada pilihan yang cocok di hati.',
-                'Tetap tenang, baca perlahan, dan pilih pilihan dengan yakin.',
-                'Hoki bisa datang dari inspirasi yang kamu lihat hari ini.',
-                'Cek referensinya sekarang dan ikuti kata hati terbaikmu.',
-                'Satu pilihan pilihan bisa jadi pembuka cerita seru hari ini.',
-                'Jangan lewatkan update pilihan yang sudah disiapkan hari ini.',
-                'Feeling yang tepat bisa muncul setelah membaca prediksi.',
-                'Masuk sebentar, ambil inspirasi, lalu tentukan pilihanmu.',
-                'Hari ini waktunya tajamkan insting dan baca peluang baru.'
+                'Gunakan sebagai referensi santai dan tetap utamakan feeling sendiri.',
+                'Baca perlahan, sesuaikan dengan insting, lalu tentukan pilihanmu.',
+                'Semoga inspirasi hari ini membawa hasil yang lebih menyenangkan.',
+                'Cek sekarang agar tidak ketinggalan update pilihan terbaru.',
+                'Jadikan bahan pertimbangan sebelum memilih angka favoritmu.',
+                'Tetap tenang, ikuti kata hati, dan semoga hasilnya berpihak.',
+                'Prediksi hanya referensi, feeling kamu tetap jadi kunci utama.',
+                'Pantau update-nya dan ambil pilihan yang paling cocok di hati.',
+                'Semoga pilihan hari ini menjadi awal kabar baik untukmu.',
+                'Jangan terburu-buru, baca dulu dan tentukan dengan yakin.',
+                'Makin banyak referensi, makin siap menentukan pilihan terbaik.',
+                'Gunakan peluang hari ini sebagai bahan inspirasi yang ringan.',
+                'Tetap semangat, tetap fokus, dan semoga hoki mendekat.',
+                'Cek detailnya sekarang lalu pilih sesuai keyakinan masing-masing.',
+                'Satu inspirasi kecil bisa membantu feeling jadi lebih terarah.',
+                'Pantau terus update terbaru agar pilihan makin matang.',
+                'Semoga referensi hari ini memberi semangat baru untuk member setia.',
+                'Tentukan pilihan dengan santai dan tetap nikmati prosesnya.',
+                'Baca prediksinya, ambil yang cocok, dan semoga hasilnya maksimal.',
+                'Jangan lewatkan momen hari ini untuk cek inspirasi terbaru.'
             ];
 
             const prediksiMood = [
-                'Prediksi Sendiri Tetap yang Terbaik!',
-                'Feeling Sendiri Tetap Jadi Kunci Utama!',
-                'Pilihan Pilihan Bisa Jadi Jalan Hoki Hari Ini!',
-                'Prediksi Hari Ini Siap Jadi Bahan Inspirasi!',
-                'Racikan Pilihan Fresh Siap Menemani Lpilihanh Kamu!',
-                'Momen Hoki Hari Ini Jangan Sampai Lewat!',
-                'Cek Prediksi, Tajamkan Insting, Lalu Gas!',
-                'Pilihan Berkelas Selalu Punya Cerita Menarik!',
-                'Pilih Dengan Tenang, Semoga Hasilnya Menang!',
-                'Inspirasi Pilihan Hari Ini Sudah Ready!',
-                'Prediksi Pilihan Bisa Jadi Teman Feeling Kamu!',
-                'Saatnya Baca Prediksi dan Ikuti Kata Hati!',
-                'Rumus Santai, Feeling Tajam, Pilihan Makin Mantap!',
-                'Pilihan Hari Ini Bisa Jadi Pembawa Kabar Baik!',
-                'Jangan Asal Pilih, Baca Dulu Prediksinya!',
-                'Prediksi Mantap Bikin Semangat Makin Naik!',
-                'Baca Peluangnya, Pilih Pilihannya, Nikmati Momennya!',
-                'Feeling Kuat Selalu Punya Arah Sendiri!',
-                'Pilihan Pilihan Hari Ini Siap Kamu Pantau!',
-                'Cari Inspirasi Pilihan Biar Lpilihanh Makin Percaya Diri!'
+                'Feeling tajam dimulai dari referensi yang rapi!',
+                'Prediksi fresh, pilihan makin percaya diri!',
+                'Baca santai, pilih mantap, semoga berbuah manis!',
+                'Inspirasi hari ini siap menemani langkahmu!',
+                'Tetap gunakan insting sendiri sebagai penentu utama!',
+                'Pilihan bijak selalu dimulai dari hati yang tenang!',
+                'Semoga angka pilihanmu membawa kabar baik!',
+                'Referensi baru, semangat baru, peluang baru!',
+                'Pantau prediksi, jaga fokus, dan tetap percaya feeling!',
+                'Hoki bisa datang saat persiapan sudah matang!',
+                'Prediksi hanya arahan, keyakinan tetap di tangan kamu!',
+                'Cek update hari ini dan ambil peluang terbaik!',
+                'Pilihan yang tenang sering membawa hasil lebih nyaman!',
+                'Semoga inspirasi ini cocok dengan feeling kamu!',
+                'Tetap santai, tetap yakin, dan semoga sukses!',
+                'Referensi harian siap membuat pilihan lebih terarah!',
+                'Insting kuat perlu ditemani bacaan yang fresh!',
+                'Cek prediksi terbaru sebelum momen lewat!',
+                'Semoga hari ini menjadi waktu terbaik untuk pilihanmu!',
+                'Baca, timbang, pilih, lalu nikmati momennya!'
             ];
 
             const prediksiCta = [
@@ -7743,93 +7503,93 @@ ARAH KOMPOSISI DAN HASIL AKHIR:
             ];
 
             const linkAltOpeners = [
-                'Link aman sudah ready!',
-                'Link alternatif aman sudah siap!',
-                'Link cadangan aman sudah ready!',
-                'Akses aman sudah tersedia!',
-                'Link aman anti ribet sudah siap!',
-                'Jalur masuk aman sudah ready!',
-                'Link alternatif resmi sudah siap dipakai!',
-                'Akses cadangan aman sudah kami siapkan!',
-                'Link aman untuk masuk lagi sudah ready!',
-                'Jalur alternatif aman sudah terbuka!',
-                'Link aman buat akses cepat sudah siap!',
-                'Akses alternatif aman sudah ready sekarang!'
+                'Link alternatif Ziatogel sudah diperbarui!',
+                'Akses cadangan Ziatogel siap digunakan sekarang!',
+                'Jalur masuk terbaru sudah kami siapkan untuk member setia!',
+                'Link alternatif resmi hadir untuk akses yang lebih praktis!',
+                'Butuh akses cepat? Jalur alternatif Ziatogel sudah ready!',
+                'Gunakan link cadangan resmi agar akses tetap lancar!',
+                'Akses terbaru sudah tersedia untuk masuk lebih mudah!',
+                'Link alternatif Ziatogel siap menemani aktivitas kamu!',
+                'Jalur aman dan simpel sudah tersedia hari ini!',
+                'Masuk lebih mudah lewat akses alternatif terbaru!',
+                'Link cadangan resmi sudah aktif dan siap dipakai!',
+                'Akses Ziatogel tetap nyaman lewat jalur alternatif ini!'
             ];
 
             const linkAltActions = [
-                'Klik linknya dan langsung gas sekarang!',
-                'Pilih linknya, buka halamannya, lalu gas sekarang!',
-                'Klik salah satu link dan lanjutkan tanpa ribet!',
-                'Buka linknya sekarang dan lanjutkan aktivitas kamu!',
-                'Langsung klik, langsung masuk, langsung gas!',
-                'Coba salah satu link yang paling lancar di jaringan kamu!',
-                'Klik link pilihanmu dan nikmati akses yang lebih mudah!',
-                'Masuk lewat link aman dan lanjutkan momen hoki hari ini!',
-                'Gunakan link yang tersedia dan gas tanpa banyak tunggu!',
-                'Pilih jalur paling lancar dan langsung lanjut sekarang!',
-                'Klik sekarang, jangan sampai momen bagusnya lewat!',
-                'Buka salah satu link di bawah ini dan langsung gas!'
+                'Pilih salah satu link di bawah lalu lanjutkan aksesmu.',
+                'Klik link yang paling lancar di jaringan kamu.',
+                'Gunakan jalur pertama atau kedua sesuai kebutuhan akses.',
+                'Buka salah satu link resmi dan lanjut tanpa ribet.',
+                'Silakan pilih link yang paling cepat terbuka di perangkatmu.',
+                'Coba link tersedia agar akses kembali normal dan nyaman.',
+                'Masuk melalui jalur resmi yang sudah disiapkan.',
+                'Gunakan link alternatif untuk akses yang lebih stabil.',
+                'Klik salah satu link dan lanjutkan aktivitas seperti biasa.',
+                'Pilih jalur yang paling responsif untuk koneksi kamu.',
+                'Akses lewat link resmi agar lebih aman dan praktis.',
+                'Gunakan link cadangan saat link utama sulit dibuka.'
             ];
 
             const linkAltMood = [
-                'Hoki hari ini bisa jadi milik kamu.',
-                'Momen bagus hari ini bisa jadi kesempatan kamu.',
-                'Kesempatan emas hari ini jangan sampai kamu lewatkan.',
-                'Peluang hoki bisa datang saat kamu paling siap.',
-                'Hari ini bisa jadi waktu terbaik buat mulai lagi.',
-                'Feeling tajam bisa membawa kamu ke momen terbaik.',
-                'Hoki besar kadang datang dari pilihan yang sederhana.',
-                'Momen rezeki bisa datang saat kamu berani mencoba.',
-                'Kesempatan hari ini bisa jadi pembuka kabar baik.',
-                'Insting bagus hari ini bisa jadi milik kamu.',
-                'Peluang terbaik kadang datang tanpa banyak tanda.',
-                'Hoki bisa mendekat saat kamu sudah siap gas.'
+                'Akses lancar bikin aktivitas jadi lebih nyaman.',
+                'Jalur resmi membantu kamu tetap terhubung tanpa bingung.',
+                'Masuk lebih tenang dengan link yang sudah disiapkan.',
+                'Akses stabil membuat pengalaman jadi lebih praktis.',
+                'Koneksi nyaman dimulai dari jalur yang tepat.',
+                'Link alternatif bisa jadi solusi saat akses utama padat.',
+                'Tetap terhubung dengan cara yang simpel dan jelas.',
+                'Gunakan akses resmi agar semuanya lebih rapi.',
+                'Jalur cadangan siap membantu kapan saja dibutuhkan.',
+                'Aktivitas tetap jalan dengan akses yang lebih mudah.',
+                'Link resmi membuat akses terasa lebih aman.',
+                'Masuk tanpa bingung lewat dua jalur yang tersedia.'
             ];
 
             const linkAltAdvice = [
-                'Dengarkan insting, tajamkan feeling, dan jangan sampai ketinggalan kesempatan emas hari ini!',
-                'Tajamkan feeling, pilih pilihan terbaik, dan jangan sampai tertinggal momen seru hari ini!',
-                'Ikuti insting terbaikmu dan jangan biarkan kesempatan bagus lewat begitu saja!',
-                'Gunakan feeling, tetap fokus, dan ambil peluang yang sudah ada di depan mata!',
-                'Percaya feeling, tetap santai, dan semoga momen hari ini membawa momen terbaik!',
-                'Jangan ragu cek sekarang, karena kesempatan emas kadang datang tanpa menunggu!',
-                'Buka jalurnya, tajamkan insting, dan semoga rezeki berpihak hari ini!',
-                'Tetap fokus, pilih link yang lancar, dan jangan sampai ketinggalan kesempatan!',
-                'Makin cepat akses, makin siap kamu menyambut peluang hari ini!',
-                'Dengarkan kata hati, siapkan feeling, dan lanjutkan momen terbaikmu sekarang!',
-                'Jangan tunggu nanti, karena momen hoki bisa datang kapan saja!',
-                'Pilih jalur aman, tajamkan insting, dan lanjutkan dengan percaya diri!'
+                'Simpan link ini agar mudah dipakai saat dibutuhkan.',
+                'Gunakan link resmi dan hindari akses dari sumber yang tidak jelas.',
+                'Cek kembali alamat link sebelum membuka halaman tujuan.',
+                'Pilih link yang paling lancar sesuai jaringan perangkatmu.',
+                'Pastikan koneksi stabil agar halaman terbuka lebih cepat.',
+                'Gunakan link cadangan bila akses utama sedang lambat.',
+                'Bookmark halaman ini supaya tidak perlu mencari ulang.',
+                'Buka melalui browser yang biasa kamu gunakan agar lebih nyaman.',
+                'Pakai salah satu link resmi yang tersedia di bawah.',
+                'Jangan lupa simpan link alternatif untuk akses berikutnya.',
+                'Gunakan jalur aman supaya akses tetap tertata.',
+                'Pilih link yang responsif dan lanjutkan dengan nyaman.'
             ];
 
             const linkAltRezeki = [
-                'Rezeki bisa datang dari mana saja.',
-                'Peluang baik bisa datang kapan saja.',
-                'Hoki bisa datang dari pilihan sederhana.',
-                'Kesempatan emas bisa muncul tanpa diduga.',
-                'Rezeki hari ini bisa jadi milik kamu.',
-                'Momen menang bisa datang dari feeling yang tepat.',
-                'Kabar baik bisa hadir dari pilihan yang berani.',
-                'Peluang besar kadang dimulai dari satu klik.',
-                'Hoki lancar bisa datang saat akses juga lancar.',
-                'Rezeki tidak pernah salah jalan.',
-                'Momen terbaik bisa hadir hari ini.',
-                'Peluang manis bisa menunggu di depan mata.'
+                'Semoga akses hari ini lancar dan tanpa kendala.',
+                'Semoga link ini membantu aktivitas kamu tetap nyaman.',
+                'Semoga jalur terbaru ini lebih cepat dibuka.',
+                'Semoga akses kamu makin stabil dari perangkat mana pun.',
+                'Semoga link cadangan ini jadi solusi saat dibutuhkan.',
+                'Semoga semua proses hari ini berjalan lancar.',
+                'Semoga akses tetap mudah dan tidak terhambat.',
+                'Semoga jalur resmi ini membantu kamu masuk lebih cepat.',
+                'Semoga pengalaman akses jadi lebih simpel.',
+                'Semoga link ini memudahkan member setia Ziatogel.',
+                'Semoga akses tetap aman, cepat, dan nyaman.',
+                'Semoga aktivitas kamu tetap lancar bersama Ziatogel.'
             ];
 
             const linkAltCta = [
-                'Gas sekarang!',
-                'Langsung gas sekarang!',
-                'Jangan tunggu lama!',
-                'Klik dan lanjutkan sekarang!',
-                'Gas pelan tapi pasti!',
-                'Ambil momennya sekarang!',
-                'Jangan sampai ketinggalan!',
-                'Buka sekarang dan gas!',
-                'Pilih linknya dan lanjut!',
-                'Sekarang waktunya gas!',
-                'Jangan ragu, langsung gas!',
-                'Siapkan feeling dan gas!'
+                'Silakan gunakan link resmi di bawah.',
+                'Pilih link yang paling lancar untuk kamu.',
+                'Klik salah satu link dan lanjutkan akses.',
+                'Simpan link ini untuk akses berikutnya.',
+                'Gunakan jalur alternatif resmi Ziatogel.',
+                'Buka linknya dan lanjutkan dengan nyaman.',
+                'Coba link pertama atau kedua sesuai koneksi.',
+                'Akses sekarang lewat link yang tersedia.',
+                'Gunakan salah satu link resmi berikut.',
+                'Pilih jalur terbaik untuk perangkatmu.',
+                'Masuk lewat link yang paling cepat terbuka.',
+                'Link resmi sudah siap digunakan.'
             ];
 
             function quoteClampNumber(value) {
@@ -8078,8 +7838,6 @@ ARAH KOMPOSISI DAN HASIL AKHIR:
                 setQuotesPostinganCollapsed(willCollapse);
             });
 
-            quoteEls.twitterEdit.addEventListener('click', function() { toggleQuoteEdit(quoteEls.twitterText, quoteEls.twitterEdit); });
-            quoteEls.twitterCopy.addEventListener('click', function() { copyQuoteText(quoteEls.twitterText, quoteEls.twitterCopy, '📋 Copy'); });
 
             quoteEls.prediksiRandom.addEventListener('click', setRandomPrediksiQuote);
             quoteEls.prediksiEdit.addEventListener('click', function() { toggleQuoteEdit(quoteEls.prediksiText, quoteEls.prediksiEdit); });
