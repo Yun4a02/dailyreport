@@ -1,0 +1,512 @@
+<?php
+// =====================================================
+// DASHBROAD CS ZIATOGEL - CLEAN MENU FINAL
+// Menu aktif hanya:
+// SERAH TERIMA, POSTINGAN, DATA REPORT, USD PENCAIRAN, QRIS MINERA
+// =====================================================
+?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DASHBROAD CS ZIATOGEL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --sidebar-width: 285px;
+            --bg-dark: #020817;
+            --bg-soft: #071120;
+            --sidebar-bg: rgba(4, 16, 34, 0.96);
+            --panel: rgba(8, 25, 48, 0.86);
+            --panel-soft: rgba(255, 255, 255, 0.055);
+            --blue-main: #38bdf8;
+            --blue-light: #d8f3ff;
+            --blue-strong: #00bfff;
+            --blue-deep: #005eff;
+            --blue-glow: rgba(0, 170, 255, 0.42);
+            --orange-main: #ff8a1f;
+            --orange-light: #ffd0a3;
+            --orange-deep: #c2410c;
+            --orange-glow: rgba(255, 138, 31, 0.36);
+            --text-main: #f3fbff;
+            --text-muted: rgba(243, 251, 255, 0.68);
+            --border-ui: rgba(0, 170, 255, 0.28);
+            --border-orange: rgba(255, 138, 31, 0.34);
+            --shadow-main: 0 28px 80px rgba(0, 0, 0, 0.66);
+            --transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-weight: 900 !important;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: geometricPrecision;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            background:
+                radial-gradient(circle at 10% 8%, rgba(0, 170, 255, 0.20), transparent 28%),
+                radial-gradient(circle at 92% 14%, rgba(255, 138, 31, 0.16), transparent 25%),
+                radial-gradient(circle at 54% 104%, rgba(0, 95, 255, 0.20), transparent 36%),
+                linear-gradient(135deg, #020817 0%, #061527 46%, #020817 100%);
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.30); }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--orange-light), var(--orange-main), var(--blue-strong));
+            border-radius: 999px;
+            border: 2px solid rgba(0,0,0,0.32);
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            flex: 0 0 var(--sidebar-width);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background:
+                radial-gradient(circle at 20% 0%, rgba(0, 170, 255, 0.20), transparent 38%),
+                radial-gradient(circle at 95% 92%, rgba(255, 138, 31, 0.12), transparent 34%),
+                linear-gradient(180deg, rgba(7, 17, 32, 0.98), rgba(2, 8, 23, 0.98));
+            border-right: 1px solid var(--border-ui);
+            box-shadow: 12px 0 44px rgba(0, 0, 0, 0.64), 0 0 28px rgba(0, 170, 255, 0.10);
+            z-index: 10;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, transparent, var(--blue-strong), var(--orange-main), transparent);
+            box-shadow: 0 0 22px var(--blue-glow), 0 0 28px var(--orange-glow);
+        }
+
+        .header-title {
+            padding: 28px 18px 22px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 170, 255, 0.18);
+        }
+
+        .brand-kicker {
+            display: inline-block;
+            margin-bottom: 10px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            color: var(--orange-light);
+            background: rgba(255, 138, 31, 0.08);
+            border: 1px solid rgba(255, 138, 31, 0.26);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 8px;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            box-shadow: 0 0 18px rgba(255, 138, 31, 0.10);
+        }
+
+        .dashboard-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 19px;
+            line-height: 1.35;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: transparent;
+            background: linear-gradient(90deg, #ffffff 0%, #d8f3ff 34%, #38bdf8 65%, #ff8a1f 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 14px rgba(0, 170, 255, 0.28);
+        }
+
+        .clock-box {
+            margin: 16px auto 0;
+            padding: 11px 12px;
+            width: 92%;
+            border-radius: 16px;
+            color: var(--blue-light);
+            background: rgba(0, 0, 0, 0.28);
+            border: 1px solid rgba(0, 170, 255, 0.22);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            letter-spacing: 1px;
+            line-height: 1.55;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+        }
+
+        .menu-container {
+            list-style: none;
+            flex: 1 1 auto;
+            overflow-y: auto;
+            padding: 16px 13px 20px;
+        }
+
+        .menu-item { margin-bottom: 10px; }
+
+        .menu-link {
+            width: 100%;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 13px 14px;
+            border-radius: 14px;
+            color: var(--text-main);
+            text-decoration: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 13px;
+            background:
+                linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018)),
+                rgba(0, 0, 0, 0.26);
+            border: 1px solid rgba(0, 170, 255, 0.22);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 10px;
+            bottom: 10px;
+            width: 4px;
+            border-radius: 999px;
+            background: var(--orange-main);
+            opacity: 0;
+            box-shadow: 0 0 15px var(--orange-glow);
+            transition: var(--transition);
+        }
+
+        .menu-link:hover,
+        .menu-link.active,
+        .has-submenu.open > .menu-link {
+            color: #04111f;
+            background: linear-gradient(135deg, #d8f3ff 0%, #38bdf8 48%, #ff8a1f 100%);
+            border-color: rgba(255,255,255,0.55);
+            box-shadow: 0 14px 30px rgba(0,0,0,0.24), 0 0 24px rgba(0, 170, 255, 0.18), 0 0 18px rgba(255, 138, 31, 0.12);
+            transform: translateX(5px);
+        }
+
+        .menu-link:hover::before,
+        .menu-link.active::before,
+        .has-submenu.open > .menu-link::before {
+            opacity: 1;
+            background: #04111f;
+            box-shadow: none;
+        }
+
+        .icon {
+            min-width: 22px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            filter: drop-shadow(0 0 8px rgba(0,170,255,0.24));
+        }
+
+        .arrow {
+            margin-left: auto;
+            color: var(--orange-light);
+            font-size: 10px;
+            transition: var(--transition);
+        }
+
+        .has-submenu.open .arrow {
+            transform: rotate(180deg);
+            color: #04111f;
+        }
+
+        .submenu {
+            list-style: none;
+            max-height: 0;
+            overflow: hidden;
+            margin: 6px 0 0 22px;
+            padding: 0;
+            border-left: 2px solid rgba(255, 138, 31, 0.54);
+            background: rgba(0, 0, 0, 0.24);
+            border-radius: 0 0 14px 14px;
+            transition: max-height 0.28s ease, padding 0.2s ease;
+        }
+
+        .has-submenu.open .submenu {
+            max-height: 520px;
+            padding: 8px 0;
+        }
+
+        .submenu-item a {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin: 3px 7px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            color: var(--blue-light);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.75px;
+            transition: var(--transition);
+        }
+
+        .submenu-item a:hover,
+        .submenu-item a.active {
+            color: #fff;
+            background: rgba(0, 170, 255, 0.13);
+            padding-left: 18px;
+            box-shadow: inset 3px 0 0 var(--orange-main);
+        }
+
+        .main-area {
+            flex: 1 1 auto;
+            min-width: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .topbar {
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 22px;
+            border-bottom: 1px solid rgba(0, 170, 255, 0.16);
+            background: rgba(2, 8, 23, 0.72);
+            backdrop-filter: blur(16px);
+        }
+
+        .topbar-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 15px;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            color: var(--blue-light);
+        }
+
+        .topbar-chip {
+            padding: 8px 13px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 138, 31, 0.32);
+            color: var(--orange-light);
+            background: rgba(255, 138, 31, 0.08);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 9px;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+
+        .content-area {
+            flex: 1 1 auto;
+            min-height: 0;
+            padding: 18px;
+            position: relative;
+        }
+
+        .welcome-card {
+            height: 100%;
+            min-height: 420px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-radius: 28px;
+            border: 1px solid rgba(0, 170, 255, 0.24);
+            background:
+                radial-gradient(circle at 22% 14%, rgba(0, 170, 255, 0.18), transparent 32%),
+                radial-gradient(circle at 84% 76%, rgba(255, 138, 31, 0.12), transparent 32%),
+                linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.016)),
+                rgba(2, 8, 23, 0.62);
+            box-shadow: var(--shadow-main), inset 0 1px 0 rgba(255,255,255,0.06);
+        }
+
+        .welcome-card h1 {
+            margin-bottom: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(26px, 4vw, 54px);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: transparent;
+            background: linear-gradient(90deg, #ffffff, #38bdf8, #ff8a1f);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-card p {
+            color: var(--text-muted);
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+
+        iframe {
+            display: none;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 24px;
+            background: rgba(2, 8, 23, 0.62);
+            box-shadow: var(--shadow-main);
+        }
+
+        .content-area.menu-opened .welcome-card { display: none; }
+        .content-area.menu-opened iframe { display: block; }
+
+        @media (max-width: 820px) {
+            body { flex-direction: column; overflow: auto; }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                flex: 0 0 auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border-ui);
+            }
+            .sidebar::before {
+                top: auto;
+                left: 0;
+                width: auto;
+                height: 3px;
+            }
+            .menu-container {
+                max-height: 50vh;
+            }
+            .main-area { height: 78vh; }
+            .topbar { gap: 12px; align-items: flex-start; flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="header-title">
+            <div class="brand-kicker">CS ZIATOGEL</div>
+            <div class="dashboard-text">DASHBROAD<br>CS ZIATOGEL</div>
+            <div class="clock-box" id="clockBox">Memuat waktu...</div>
+        </div>
+
+        <ul class="menu-container">
+            <li class="menu-item">
+                <a href="serah_terima.php" target="mainFrame" class="menu-link nav-link-item"><span class="icon">📝</span> SERAH TERIMA</a>
+            </li>
+
+            <li class="menu-item has-submenu">
+                <div class="menu-link" onclick="toggleSubmenu(this)"><span class="icon">📁</span> POSTINGAN <span class="arrow">▼</span></div>
+                <ul class="submenu">
+                    <li class="submenu-item"><a href="post_kemenangan.php" target="mainFrame" class="nav-link-item"><span>💯</span> GENERATOR POST</a></li>
+                    <li class="submenu-item"><a href="prediksi.php" target="mainFrame" class="nav-link-item"><span>🔥</span> PREDIKSI UP</a></li>
+                    <li class="submenu-item"><a href="syair.php" target="mainFrame" class="nav-link-item"><span>📜</span> SYAIR</a></li>
+                </ul>
+            </li>
+
+            <li class="menu-item has-submenu">
+                <div class="menu-link" onclick="toggleSubmenu(this)"><span class="icon">📊</span> DATA REPORT <span class="arrow">▼</span></div>
+                <ul class="submenu">
+                    <li class="submenu-item"><a href="reportan_007.php" target="mainFrame" class="nav-link-item"><span>📋</span> REPORTAN 007</a></li>
+                    <li class="submenu-item"><a href="nawala.html" target="mainFrame" class="nav-link-item"><span>🌏</span> NAWALA</a></li>
+                    <li class="submenu-item"><a href="daily_report.html" target="mainFrame" class="nav-link-item"><span>🤖</span> DAILY REPORT</a></li>
+                    <li class="submenu-item"><a href="report_vip.html" target="mainFrame" class="nav-link-item"><span>📊</span> REPORT DAILY QRIS</a></li>
+                </ul>
+            </li>
+
+            <li class="menu-item has-submenu">
+                <div class="menu-link" onclick="toggleSubmenu(this)"><span class="icon">💵</span> USD PENCAIRAN <span class="arrow">▼</span></div>
+                <ul class="submenu">
+                    <li class="submenu-item"><a href="rate_usdt.html" target="mainFrame" class="nav-link-item"><span>📈</span> RATE USD</a></li>
+                    <li class="submenu-item"><a href="sc_peminjaman.html" target="mainFrame" class="nav-link-item"><span>🏦</span> DATA PEMINJAMAN</a></li>
+                </ul>
+            </li>
+
+            <li class="menu-item has-submenu">
+                <div class="menu-link" onclick="toggleSubmenu(this)"><span class="icon">🔍</span> QRIS MINERA <span class="arrow">▼</span></div>
+                <ul class="submenu">
+                    <li class="submenu-item"><a href="sc_minerapay.html" target="mainFrame" class="nav-link-item"><span>🔍</span> CARI MINERA</a></li>
+                    <li class="submenu-item"><a href="minerreport.php" target="mainFrame" class="nav-link-item"><span>📋</span> REPORT WD MINERA</a></li>
+                    <li class="submenu-item"><a href="minera_cair.html" target="mainFrame" class="nav-link-item"><span>💰</span> PENCAIRAN MINERA</a></li>
+                    <li class="submenu-item"><a href="biaya_minera.html" target="mainFrame" class="nav-link-item"><span>💰</span> CEK BIAYA MINERA</a></li>
+                </ul>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="main-area">
+        <div class="topbar">
+            <div class="topbar-title">DASHBROAD CS ZIATOGEL</div>
+            <div class="topbar-chip">BLUE DOPE + ORANGE</div>
+        </div>
+
+        <section class="content-area" id="contentArea">
+            <div class="welcome-card">
+                <div>
+                    <h1>DASHBROAD CS ZIATOGEL</h1>
+                    <p>Pilih menu di sebelah kiri untuk membuka halaman kerja.</p>
+                </div>
+            </div>
+            <iframe name="mainFrame" id="mainFrame" title="DASHBROAD CS ZIATOGEL"></iframe>
+        </section>
+    </main>
+
+    <script>
+        function toggleSubmenu(el) {
+            const item = el.closest('.has-submenu');
+            const isOpen = item.classList.contains('open');
+            document.querySelectorAll('.has-submenu.open').forEach(menu => {
+                if (menu !== item) menu.classList.remove('open');
+            });
+            item.classList.toggle('open', !isOpen);
+        }
+
+        function setActiveLink(link) {
+            document.querySelectorAll('.nav-link-item, .menu-link').forEach(el => el.classList.remove('active'));
+            link.classList.add('active');
+            const parentSubmenu = link.closest('.has-submenu');
+            if (parentSubmenu) {
+                parentSubmenu.classList.add('open');
+                const parentMenu = parentSubmenu.querySelector(':scope > .menu-link');
+                if (parentMenu) parentMenu.classList.add('active');
+            }
+            document.getElementById('contentArea').classList.add('menu-opened');
+        }
+
+        document.querySelectorAll('.nav-link-item').forEach(link => {
+            link.addEventListener('click', function () {
+                setActiveLink(this);
+            });
+        });
+
+        function updateClock() {
+            const now = new Date();
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const day = days[now.getDay()];
+            const date = now.getDate();
+            const month = months[now.getMonth()];
+            const year = now.getFullYear();
+            const time = now.toLocaleTimeString('id-ID', { hour12: false });
+            document.getElementById('clockBox').innerHTML = `${day}, ${date} ${month} ${year}<br>${time} WIB`;
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>
