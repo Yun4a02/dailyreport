@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Report Panel</title>
+    <title>Daily Report ZIA</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
@@ -966,7 +966,7 @@
 
 
 
-        /* === UPDATE TITLE: WUKONG TITLE DI DEPAN TANPA SUBTITLE === */
+        /* === UPDATE TITLE: DAILY REPORT ZIA DI DEPAN TANPA SUBTITLE === */
         .main-header-title {
             padding: 18px 24px 20px !important;
             justify-content: center !important;
@@ -1004,7 +1004,7 @@
         }
 
 
-        /* === FIX TITLE: TEKS WUKONG JELAS DI DEPAN, TIDAK BLUR === */
+        /* === FIX TITLE: TEKS DAILY REPORT ZIA JELAS DI DEPAN, TIDAK BLUR === */
         .main-header-title {
             position: relative !important;
             z-index: 50 !important;
@@ -1308,6 +1308,166 @@
             }
         }
 
+    
+
+
+
+        /* === THEME FINAL: BIRU DOPE + AKSEN ORANGE === */
+        :root {
+            --bg-dark: #020817;
+            --bg-soft: #071120;
+            --panel: rgba(8, 25, 48, 0.82);
+            --panel-2: rgba(255,255,255,0.05);
+            --card-bg: rgba(10,20,40,0.90);
+            --card-glass: rgba(255,255,255,0.05);
+
+            /* Nama variabel lama tetap dipakai agar fungsi/layout tidak berubah */
+            --neon-gold: #ff8a00;
+            --gold-light: #ffd2a1;
+            --gold-strong: #ff9f1c;
+            --gold-deep: #b45309;
+            --gold-glow: rgba(255,138,0,.42);
+
+            --neon-red: #ff6a00;
+            --red-glow: rgba(255,106,0,.34);
+            --green: #00ffd5;
+            --blue: #38bdf8;
+            --text-main: #f3fbff;
+            --text-muted: rgba(243,251,255,.68);
+            --border-ui: rgba(56,189,248,.34);
+            --border-soft: rgba(255,255,255,.12);
+            --shadow-main: 0 28px 80px rgba(0,0,0,.65);
+            --radius-xl: 28px;
+            --radius-lg: 20px;
+            --radius-md: 14px;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 10% 8%, rgba(0,170,255,0.22), transparent 26%),
+                radial-gradient(circle at 88% 10%, rgba(255,138,0,0.16), transparent 27%),
+                radial-gradient(circle at 52% 102%, rgba(0,90,255,0.18), transparent 34%),
+                linear-gradient(135deg, #010615 0%, #061832 45%, #020817 100%) !important;
+        }
+
+        html {
+            scrollbar-color: rgba(255,138,0,0.88) rgba(0,0,0,0.32) !important;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #ffd2a1, #ff8a00, #b45309) !important;
+            box-shadow: 0 0 16px rgba(255,138,0,.42) !important;
+        }
+
+        body::after,
+        .main-header-title,
+        .card,
+        .scatter-menu-bottom,
+        .daily-wa-menu-bottom,
+        h2,
+        .input-wrapper,
+        .qris-input-panel,
+        .daily-wa-input-panel,
+        .daily-wa-preview-panel,
+        .scatter-info-box {
+            border-color: rgba(56,189,248,0.34) !important;
+        }
+
+        .main-header-title,
+        .card,
+        .scatter-menu-bottom,
+        .daily-wa-menu-bottom {
+            background:
+                radial-gradient(circle at 12% 0%, rgba(0,170,255,0.18), transparent 34%),
+                radial-gradient(circle at 90% 80%, rgba(255,138,0,0.12), transparent 30%),
+                linear-gradient(135deg, rgba(255,255,255,0.06), transparent 28%),
+                rgba(4, 12, 28, 0.92) !important;
+            box-shadow: 0 28px 80px rgba(0,0,0,.68), 0 0 42px rgba(0,170,255,.12), inset 0 1px 0 rgba(255,255,255,.08) !important;
+        }
+
+        .main-header-title::after,
+        .card::after,
+        .scatter-menu-bottom::after,
+        .daily-wa-menu-bottom::after {
+            background: linear-gradient(90deg, transparent, #38bdf8, #ff8a00, #38bdf8, transparent) !important;
+            box-shadow: 0 0 22px rgba(255,138,0,.52), 0 0 18px rgba(0,170,255,.52) !important;
+        }
+
+        .main-header-title .title-line,
+        .main-header-title div {
+            background: linear-gradient(90deg, #ffffff 0%, #dff6ff 34%, #38bdf8 62%, #ff8a00 100%) !important;
+            -webkit-background-clip: text !important;
+            background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            text-shadow: 0 0 10px rgba(0,170,255,.36) !important;
+        }
+
+        .main-header-title .title-line .zia-orange {
+            background: linear-gradient(90deg, #ffd2a1 0%, #ff8a00 60%, #ff6a00 100%) !important;
+            -webkit-background-clip: text !important;
+            background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            text-shadow: 0 0 14px rgba(255,138,0,.48) !important;
+        }
+
+        h2,
+        label,
+        .qris-input-panel h3,
+        .scatter-info-box {
+            color: #d8f3ff !important;
+            text-shadow: 0 0 14px rgba(0,170,255,.30) !important;
+        }
+
+        input,
+        textarea,
+        .preview-box-individual,
+        .preview-box-rekapan,
+        .scatter-report-box,
+        .daily-wa-report-box,
+        .scatter-file-input {
+            border-color: rgba(56,189,248,.26) !important;
+            border-left-color: #ff8a00 !important;
+            background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.015)), rgba(2,10,25,.72) !important;
+            color: #f3fbff !important;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: rgba(255,138,0,.72) !important;
+            border-left-color: #ffd2a1 !important;
+            background: rgba(255,138,0,.07) !important;
+            box-shadow: 0 0 0 4px rgba(255,138,0,.10), inset 0 1px 0 rgba(255,255,255,.06) !important;
+        }
+
+        .btn-copy,
+        .shift-btn.active,
+        .daily-wa-status-chip.done,
+        #waStatusRutin.done,
+        .scatter-file-input::file-selector-button {
+            color: #02111f !important;
+            background: linear-gradient(135deg, #dff6ff 0%, #38bdf8 48%, #ff8a00 100%) !important;
+            border-color: rgba(255,255,255,.45) !important;
+            box-shadow: 0 14px 28px rgba(0,170,255,.16), 0 0 22px rgba(255,138,0,.18), inset 0 1px 0 rgba(255,255,255,.65) !important;
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #ffd2a1 0%, #ff8a00 52%, #b45309 100%) !important;
+            color: #140800 !important;
+            box-shadow: 0 14px 28px rgba(255,138,0,.18), inset 0 1px 0 rgba(255,255,255,.28) !important;
+        }
+
+        .shift-btn:hover,
+        .card:hover {
+            border-color: rgba(255,138,0,.58) !important;
+            box-shadow: 0 34px 86px rgba(0,0,0,.70), 0 0 38px rgba(255,138,0,.14), inset 0 1px 0 rgba(255,255,255,.10) !important;
+        }
+
+        .toast-msg {
+            color: #02111f !important;
+            background: linear-gradient(135deg, #dff6ff 0%, #38bdf8 48%, #ff8a00 100%) !important;
+            box-shadow: 0 22px 52px rgba(0,0,0,.48), 0 0 26px rgba(255,138,0,.34), inset 0 1px 0 rgba(255,255,255,.70) !important;
+        }
+
     </style>
 </head>
 <body>
@@ -1317,10 +1477,9 @@
 
     <div class="main-header-title">
         <div class="title-line">
-            <span>W</span><span>U</span><span>K</span><span>O</span><span>N</span><span>G</span> &nbsp;
             <span>D</span><span>A</span><span>I</span><span>L</span><span>Y</span> &nbsp;
             <span>R</span><span>E</span><span>P</span><span>O</span><span>R</span><span>T</span> &nbsp;
-            <span>P</span><span>A</span><span>N</span><span>E</span><span>L</span>
+            <span class="zia-orange">Z</span><span class="zia-orange">I</span><span class="zia-orange">A</span>
         </div>
     </div>
 
@@ -1409,7 +1568,7 @@
                     <input type="text" id="qris_minerapay_pendapatan" placeholder="Contoh: 1,000,000" oninput="updateQrisReport()">
                 </div>
                 <div class="qris-input-panel">
-                    <h3>QRIS VIP NST</h3>
+                    <h3>QRIS XPAY</h3>
                     <label>Total Mutasi</label>
                     <input type="text" id="qris_vip_mutasi" placeholder="Contoh: 18" oninput="updateQrisReport()">
                     <label>Total Pendapatan</label>
@@ -1708,6 +1867,14 @@
             return el ? el.value.trim() : '';
         }
 
+
+
+        function formatMutasiKoma(value) {
+            const number = parseNominalValue(value);
+            if (!number) return '';
+            return number.toLocaleString('en-US');
+        }
+
         function updateQrisReport() {
             const mineraMutasi = getQrisInputValue('qris_minerapay_mutasi');
             const mineraPendapatan = getQrisInputValue('qris_minerapay_pendapatan');
@@ -1722,7 +1889,7 @@
             };
             localStorage.setItem('wukong_qris_report_data', JSON.stringify(qrisData));
 
-            const report = `Info : Ziatogel\nPerihal : Deposit QRIS\nTanggal : ${getIndoUpperDate()}\n\nQRIS Minerapay\nTotal Mutasi : ${mineraMutasi} Mutasi\nTotal Pendapatan : ${formatQrisRupiah(mineraPendapatan)}\n\nQRIS VIP NST \nTotal Mutasi : ${vipMutasi} Mutasi\nTotal Pendapatan : ${formatQrisRupiah(vipPendapatan)}`;
+            const report = `Info : Ziatogel\nPerihal : Deposit QRIS\nTanggal : ${getIndoUpperDate()}\n\nQRIS Minerapay\nTotal Mutasi : ${formatMutasiKoma(mineraMutasi)} Mutasi\nTotal Pendapatan : ${formatQrisRupiah(mineraPendapatan)}\n\nQRIS XPAY \nTotal Mutasi : ${formatMutasiKoma(vipMutasi)} Mutasi\nTotal Pendapatan : ${formatQrisRupiah(vipPendapatan)}`;
             document.getElementById('qrisReportResult').innerText = report;
         }
 
