@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Report ZIA</title>
+    <title>Daily Report Zia</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
@@ -1655,9 +1655,10 @@
 
         function setShift(shift) {
             document.querySelectorAll('.shift-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`btn-${shift}`).classList.add('active');
+            const activeBtn = document.getElementById(`btn-${shift}`);
+            if (activeBtn) activeBtn.classList.add('active');
             currentStaff = `CS LINE ${shift}`;
-            localStorage.setItem('wukong_shift', shift);
+            localStorage.setItem('zia_shift', shift);
             updateReport();
         }
 
@@ -1674,12 +1675,12 @@
             const report = `Info : Ziatogel\nPerihal : Pengecekan Bot Telegram\nStaff : ${currentStaff}\nTanggal : ${getIndoDate()}\n\nLink daftar : ${getVal('in_daftar')}\nLink alternatif : ${getVal('in_alt')}\nlivechat : ${getVal('in_live')}\nfacebook : ${getVal('in_fb')}\nwhatsapp : ${getVal('in_wa')}\nRTP : ${getVal('in_rtp')}\nPromo & Bonus : ${getVal('in_promo')}\nPrediksi : ${getVal('in_prediksi')}\n\nket : Pengujian BOT tele aman tidak ada kendala.`;
             
             document.getElementById('reportResult').innerText = report;
-            localStorage.setItem('wukong_individual_data', JSON.stringify(dataToStore));
+            localStorage.setItem('zia_individual_data', JSON.stringify(dataToStore));
         }
 
         function updateRekapan() {
             const content = document.getElementById('in_rekapan').value;
-            localStorage.setItem('saved_rekapan_wukong', content);
+            localStorage.setItem('saved_rekapan_zia', content);
             
             const rekapan = `Info : Ziatogel\nPerihal : Rekapan Daily Report Tanggal ${getIndoDate()}\n\n${content}`;
             document.getElementById('rekapanResult').innerText = rekapan;
@@ -1705,7 +1706,7 @@
             if(confirm("Bersihkan semua data input?")) {
                 const inputs = document.querySelectorAll('.scroll-input input');
                 inputs.forEach(input => input.value = "");
-                localStorage.removeItem('wukong_individual_data');
+                localStorage.removeItem('zia_individual_data');
                 updateReport();
                 showNotif("DATA INPUT DIBERSIHKAN");
             }
@@ -1714,7 +1715,7 @@
         function resetRekapan() {
             if(confirm("Hapus semua rekapan?")) {
                 document.getElementById('in_rekapan').value = "";
-                localStorage.removeItem('saved_rekapan_wukong');
+                localStorage.removeItem('saved_rekapan_zia');
                 updateRekapan();
                 showNotif("REKAPAN TELAH DIBERSIHKAN");
             }
@@ -1887,14 +1888,14 @@
                 qris_vip_mutasi: vipMutasi,
                 qris_vip_pendapatan: vipPendapatan
             };
-            localStorage.setItem('wukong_qris_report_data', JSON.stringify(qrisData));
+            localStorage.setItem('zia_qris_report_data', JSON.stringify(qrisData));
 
             const report = `Info : Ziatogel\nPerihal : Deposit QRIS\nTanggal : ${getIndoUpperDate()}\n\nQRIS Minerapay\nTotal Mutasi : ${formatMutasiKoma(mineraMutasi)} Mutasi\nTotal Pendapatan : ${formatQrisRupiah(mineraPendapatan)}\n\nQRIS XPAY \nTotal Mutasi : ${formatMutasiKoma(vipMutasi)} Mutasi\nTotal Pendapatan : ${formatQrisRupiah(vipPendapatan)}`;
             document.getElementById('qrisReportResult').innerText = report;
         }
 
         function loadQrisReport() {
-            const savedQris = localStorage.getItem('wukong_qris_report_data');
+            const savedQris = localStorage.getItem('zia_qris_report_data');
             if (savedQris) {
                 try {
                     const data = JSON.parse(savedQris);
@@ -1903,7 +1904,7 @@
                         if (el) el.value = data[id];
                     });
                 } catch (e) {
-                    localStorage.removeItem('wukong_qris_report_data');
+                    localStorage.removeItem('zia_qris_report_data');
                 }
             }
             updateQrisReport();
@@ -1914,7 +1915,7 @@
                 const el = document.getElementById(id);
                 if (el) el.value = '';
             });
-            localStorage.removeItem('wukong_qris_report_data');
+            localStorage.removeItem('zia_qris_report_data');
             updateQrisReport();
             showNotif("REPORT QRIS DIRESET");
         }
@@ -2002,7 +2003,7 @@
                 wa_rutin: getDailyWhatsappInput('wa_rutin')
             };
 
-            localStorage.setItem('wukong_daily_whatsapp_report', JSON.stringify(data));
+            localStorage.setItem('zia_daily_whatsapp_report', JSON.stringify(data));
 
             const isRoutineDay = isDailyWhatsappRoutineDay();
             const baseReport = `POSTINGAN WHATSAPP
@@ -2033,7 +2034,7 @@ ${getDailyWhatsappRoutineCopyLine()}` : baseReport;
         }
 
         function loadDailyWhatsappReport() {
-            const savedDailyWa = localStorage.getItem('wukong_daily_whatsapp_report');
+            const savedDailyWa = localStorage.getItem('zia_daily_whatsapp_report');
             if (savedDailyWa) {
                 try {
                     const data = JSON.parse(savedDailyWa);
@@ -2042,7 +2043,7 @@ ${getDailyWhatsappRoutineCopyLine()}` : baseReport;
                         if (el) el.value = data[id];
                     });
                 } catch (e) {
-                    localStorage.removeItem('wukong_daily_whatsapp_report');
+                    localStorage.removeItem('zia_daily_whatsapp_report');
                 }
             }
             updateDailyWhatsappReport();
@@ -2053,7 +2054,7 @@ ${getDailyWhatsappRoutineCopyLine()}` : baseReport;
                 const el = document.getElementById(id);
                 if (el) el.value = '';
             });
-            localStorage.removeItem('wukong_daily_whatsapp_report');
+            localStorage.removeItem('zia_daily_whatsapp_report');
             updateDailyWhatsappReport();
             showNotif("DAILY REPOT WHATSAPP DIRESET");
         }
@@ -2061,11 +2062,11 @@ ${getDailyWhatsappRoutineCopyLine()}` : baseReport;
 
         window.onload = function() {
             // Load Shift
-            const savedShift = localStorage.getItem('wukong_shift') || autoDetectShift();
+            const savedShift = localStorage.getItem('zia_shift') || autoDetectShift();
             setShift(savedShift);
 
             // Load Individual Data
-            const savedIndividual = localStorage.getItem('wukong_individual_data');
+            const savedIndividual = localStorage.getItem('zia_individual_data');
             if (savedIndividual) {
                 const data = JSON.parse(savedIndividual);
                 for (const id in data) {
@@ -2077,7 +2078,7 @@ ${getDailyWhatsappRoutineCopyLine()}` : baseReport;
             updateReport();
 
             // Load Rekapan
-            const savedRekapan = localStorage.getItem('saved_rekapan_wukong');
+            const savedRekapan = localStorage.getItem('saved_rekapan_zia');
             if (savedRekapan) {
                 document.getElementById('in_rekapan').value = savedRekapan;
             }
