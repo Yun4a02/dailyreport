@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PENCAIRAN DANA & PENGEMBALIAN DANA</title>
+    <!-- Versi final: Lampiran Pengembalian Dana otomatis mengambil dari Lampiran Link di atas jika kolom lampiran refund kosong. -->
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #020817;
+            --card: #071120;
+            --card2: #081930;
+            --gold: #ff8a1f;
+            --gold2: #ffd0a3;
+            --gold3: #c2410c;
+            --blue-main: #38bdf8;
+            --blue-light: #d8f3ff;
+            --blue-strong: #00bfff;
+            --blue-deep: #005eff;
+            --blue-glow: rgba(0, 170, 255, 0.42);
+            --orange-glow: rgba(255, 138, 31, 0.36);
+            --border: rgba(0, 170, 255, 0.28);
+            --border-strong: rgba(255, 138, 31, 0.45);
+            --text: #f3fbff;
+            --muted: rgba(243, 251, 255, 0.68);
+            --danger: #ff4a4a;
+            --radius: 18px;
+            --transition: all .25s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top left, rgba(255,138,31,.18), transparent 28%),
+                linear-gradient(180deg, #020817 0%, #020817 48%, #020817 100%);
+            color: var(--text);
+            font-family: 'Rajdhani', sans-serif;
+            padding: 24px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: auto;
+            background:
+                linear-gradient(145deg, rgba(30, 26, 10, .78), rgba(7, 7, 5, .96)),
+                #071120;
+            border: 1px solid rgba(0,170,255,.22);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,.025) inset,
+                0 26px 90px rgba(0,0,0,.82),
+                0 0 60px rgba(255,138,31,.10);
+        }
+
+        .header {
+            text-align: center;
+            padding: 34px 30px 28px;
+            background:
+                radial-gradient(circle at top left, rgba(0,170,255,.20), transparent 36%),
+                linear-gradient(180deg, rgba(34,30,12,.88), rgba(8,8,6,.96));
+            border-bottom: 1px solid rgba(0,170,255,.22);
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold);
+            font-size: 42px;
+            letter-spacing: 14px;
+            line-height: 1.1;
+            text-shadow:
+                0 0 18px rgba(0,170,255,.34),
+                0 0 44px rgba(255,138,31,.18);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: rgba(255, 234, 166, .72);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            padding: 18px 30px;
+            border-bottom: 1px solid rgba(0,170,255,.20);
+            background:
+                linear-gradient(180deg, rgba(20,18,9,.92), rgba(8,8,6,.96));
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-behavior: smooth;
+            backdrop-filter: blur(14px);
+        }
+
+        .tab-btn {
+            min-width: 230px;
+            padding: 13px 18px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,138,31,.34);
+            background: rgba(6,6,5,.78);
+            color: rgba(255, 234, 166, .74);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: var(--transition);
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 14px rgba(0,170,255,.045);
+        }
+
+        .tab-btn.active,
+        .tab-btn:hover {
+            color: #04111f;
+            background: linear-gradient(135deg, #d8f3ff 0%, #38bdf8 48%, #ff8a1f 100%);
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,.16) inset,
+                0 12px 26px rgba(255,138,31,.18),
+                0 0 25px rgba(255,138,31,.16);
+        }
+
+        .tab-btn.active::before {
+            content: "";
+            position: absolute;
+            left: 14px;
+            right: 14px;
+            bottom: 7px;
+            height: 2px;
+            border-radius: 999px;
+            background: rgba(0,0,0,.55);
+        }
+
+        .content {
+            padding: 30px;
+            background: linear-gradient(180deg, rgba(5,5,4,.92), rgba(3,3,3,.98));
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .section-title h2,
+        .report-header h3,
+        label,
+        .col-header {
+            color: var(--gold);
+            text-shadow: 0 0 12px rgba(255,138,31,.18);
+        }
+
+        .section-title h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .section-title p {
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .panel,
+        .report-section {
+            background:
+                linear-gradient(145deg, rgba(36, 32, 13, .38), rgba(7, 7, 6, .92));
+            border: 1px solid rgba(0,170,255,.24);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 22px;
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,.025) inset,
+                0 18px 42px rgba(0,0,0,.36);
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .label-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .lock-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px;
+            border: 1px solid rgba(0,170,255,.20);
+            border-radius: 999px;
+            background: rgba(0,0,0,.22);
+        }
+
+        .lock-btn {
+            min-width: 82px;
+            height: 30px;
+            padding: 0 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(0,170,255,.35);
+            background: rgba(0,0,0,.36);
+            color: var(--gold2);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .lock-btn:hover {
+            background: rgba(255,138,31,.12);
+            box-shadow: 0 0 14px rgba(255,138,31,.18);
+        }
+
+        .lock-btn.locked,
+        .lock-btn.unlocked {
+            color: #04111f;
+            background: linear-gradient(135deg, #d8f3ff 0%, #38bdf8 48%, #ff8a1f 100%);
+            box-shadow: 0 8px 18px rgba(255,138,31,.16);
+        }
+
+        .lock-btn.unlocked {
+            background: linear-gradient(135deg, #d8f3ff 0%, #38bdf8 48%, #ff8a1f 100%);
+        }
+
+        label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        input,
+        textarea,
+        .report-area {
+            width: 100%;
+            background: rgba(5,5,4,.76);
+            border: 1px solid rgba(0,170,255,.20);
+            color: #f3fbff;
+            outline: none;
+            border-radius: 12px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            transition: var(--transition);
+            box-shadow: inset 0 0 18px rgba(0,0,0,.28);
+        }
+
+        input {
+            height: 46px;
+            padding: 0 14px;
+            font-size: 15px;
+        }
+
+        input.locked-input {
+            opacity: .82;
+            cursor: not-allowed;
+            border-color: rgba(255,138,31,.50);
+            background: linear-gradient(180deg, rgba(0,170,255,.10), rgba(5,5,4,.82));
+        }
+
+        textarea {
+            min-height: 180px;
+            resize: vertical;
+            padding: 14px;
+            font-family: Consolas, monospace;
+            font-size: 14px;
+            line-height: 1.55;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: rgba(255,138,31,.72);
+            box-shadow:
+                0 0 0 3px rgba(0,170,255,.14),
+                inset 0 0 18px rgba(0,0,0,.32);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            transition: var(--transition);
+        }
+
+        .btn {
+            padding: 13px 17px;
+            border-radius: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #d8f3ff 0%, #38bdf8 48%, #ff8a1f 100%);
+            color: #04111f;
+            box-shadow: 0 10px 24px rgba(255,138,31,.18);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(212,175,55,.18);
+        }
+
+        .btn-danger {
+            color: #ff4a4a;
+            border: 1px solid rgba(255, 35, 35, .55);
+            background: rgba(70, 0, 0, .30);
+        }
+
+        .btn-danger:hover {
+            background: rgba(130, 0, 0, .28);
+        }
+
+        .result-container,
+        .paste-table {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
+
+        .result-col,
+        .paste-col {
+            background:
+                linear-gradient(145deg, rgba(42, 37, 15, .48), rgba(6, 6, 5, .94));
+            border: 1px solid rgba(0,170,255,.28);
+            border-radius: 14px;
+            overflow: hidden;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,.018) inset,
+                0 20px 45px rgba(0,0,0,.42);
+        }
+
+        .col-header {
+            min-height: 50px;
+            background:
+                linear-gradient(180deg, rgba(255,138,31,.12), rgba(0,170,255,.07));
+            border-bottom: 1px solid rgba(0,170,255,.23);
+            padding: 12px 14px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-transform: uppercase;
+        }
+
+        .copy-icon {
+            cursor: pointer;
+            font-size: 17px;
+            user-select: none;
+            transition: var(--transition);
+            color: #04111f;
+            background: linear-gradient(135deg, #d8f3ff, #38bdf8);
+            min-width: 31px;
+            height: 28px;
+            border-radius: 9px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 18px rgba(255,138,31,.18);
+            padding: 0 8px;
+        }
+
+        .copy-icon:hover {
+            transform: scale(1.08);
+        }
+
+        .item-list {
+            padding: 6px;
+            font-family: Consolas, monospace;
+            font-size: 13px;
+            flex: 1;
+        }
+
+        .item-row {
+            padding: 10px;
+            border-bottom: 1px solid rgba(0,170,255,.10);
+            color: #d8f3ff;
+            font-weight: 800;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .total-box {
+            padding: 13px 10px;
+            color: #d8f3ff;
+            font-weight: 900;
+            border-top: 2px solid var(--gold);
+            background: rgba(0,170,255,.10);
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+
+        .table-textarea {
+            flex: 1;
+            min-height: 230px;
+            border: none;
+            border-radius: 0;
+            background:
+                linear-gradient(180deg, rgba(8,8,7,.78), rgba(3,3,3,.88));
+            resize: none;
+            color: #fff;
+            font-family: Consolas, monospace;
+            font-size: 14px;
+            line-height: 1.8;
+            padding: 14px;
+        }
+
+        .table-textarea:focus {
+            box-shadow: inset 0 0 0 2px rgba(212,175,55,.18);
+        }
+
+        .report-section {
+            background: rgba(212,175,55,.025);
+            border: 1px dashed var(--gold);
+        }
+
+        .report-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .report-header h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .report-area {
+            min-height: 330px;
+            max-height: 520px;
+            overflow-y: auto;
+            border: 1px solid rgba(255,255,255,.1);
+            padding: 18px;
+            color: #fff;
+            font-family: Consolas, monospace;
+            font-size: 15px;
+            line-height: 1.65;
+            white-space: pre-wrap;
+            font-weight: 700;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #d8f3ff, #38bdf8);
+            color: #04111f;
+            padding: 12px 28px;
+            border-radius: 999px;
+            font-weight: 900;
+            display: none;
+            z-index: 9999;
+            box-shadow: 0 12px 28px rgba(0,0,0,.35);
+        }
+
+        ::selection {
+            background: rgba(0,170,255,.35);
+            color: #f3fbff;
+        }
+
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(212,175,55,.85) rgba(255,255,255,.06);
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,.045);
+            border-radius: 999px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--gold2), var(--gold));
+            border-radius: 999px;
+            border: 2px solid rgba(8,8,8,.9);
+            box-shadow: 0 0 12px rgba(212,175,55,.28);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #fff1b0, #ff8a1f);
+            box-shadow: 0 0 18px rgba(212,175,55,.45);
+        }
+
+        .tabs::-webkit-scrollbar {
+            height: 7px;
+        }
+
+        .report-area,
+        .table-textarea {
+            scrollbar-width: thin;
+        }
+
+        @media (max-width: 1100px) {
+            .result-container,
+            .paste-table {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 760px) {
+            body {
+                padding: 12px;
+            }
+
+            .header,
+            .tabs,
+            .content {
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+            h1 {
+                font-size: 22px;
+                letter-spacing: 6px;
+            }
+
+            .tabs,
+            .section-title,
+            .btn-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .input-grid,
+            .form-grid,
+            .result-container,
+            .paste-table {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>PENCAIRAN & PENGEMBALIAN</h1>
+        <p class="subtitle">pencairan dana dan pengembalian dana.</p>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('tabUtang', this)">Peminjaman & Utang</button>
+        <button class="tab-btn" onclick="switchTab('tabRefund', this)">Pengembalian Dana</button>
+    </div>
+
+    <div class="content">
+
+        <section id="tabUtang" class="tab-content active">
+            <div class="section-title">
+                <div>
+                    <h2>Bank Data</h2>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-danger" onclick="clearAll()">Bersihkan Semua Data</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Tempel Report Transaksi</label>
+                        <textarea id="inputText" placeholder="Tempel report transaksi di sini..." oninput="processData()"></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Lampiran Link</label>
+                        <textarea id="inputLampiran" placeholder="Tempel banyak link di sini..." oninput="processData(); processRefundData()"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="result-container">
+                    <div class="result-col">
+                        <div class="col-header">Bank <span class="copy-icon" onclick="copyColumn('colBank')">📋</span></div>
+                        <div id="colBank" class="item-list"></div>
+                    </div>
+
+                    <div class="result-col">
+                        <div class="col-header">Nama <span class="copy-icon" onclick="copyColumn('colName')">📋</span></div>
+                        <div id="colName" class="item-list"></div>
+                    </div>
+
+                    <div class="result-col">
+                        <div class="col-header">No Rek <span class="copy-icon" onclick="copyColumn('colNumber')">📋</span></div>
+                        <div id="colNumber" class="item-list"></div>
+                    </div>
+
+                    <div class="result-col">
+                        <div class="col-header">Nominal <span class="copy-icon" onclick="copyColumn('colAmount')">📋</span></div>
+                        <div id="colAmount" class="item-list"></div>
+                        <div id="visualTotalNominal" class="total-box" style="display:none;"></div>
+                    </div>
+
+                    <div class="result-col">
+                        <div class="col-header">Lampiran <span class="copy-icon" onclick="copyColumn('colLink', true)">📋</span></div>
+                        <div id="colLink" class="item-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="report-section">
+                <div class="report-header">
+                    <h3>Hasil Laporan Gabungan</h3>
+                    <span class="copy-icon" onclick="copyFullReport()">📋 COPY SEMUA</span>
+                </div>
+                <div id="fullReportArea" class="report-area">Menunggu data ditempel...</div>
+            </div>
+        </section>
+
+        <section id="tabRefund" class="tab-content">
+            <div class="section-title">
+                <div>
+                    <h2>Pengembalian Dana</h2>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="copyRefundReport()">Copy Report</button>
+                    <button class="btn btn-danger" onclick="clearRefund()">Bersihkan Data</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="form-grid">
+                    <div class="input-group">
+                        <div class="label-row">
+                            <label>Info</label>
+                            <div class="lock-actions">
+                                <button type="button" id="refundInfoLockBtn" class="lock-btn" onclick="setLockableState('refundInfo', true); processRefundData();">🔒 LOCK</button>
+                                <button type="button" id="refundInfoUnlockBtn" class="lock-btn" onclick="setLockableState('refundInfo', false); processRefundData();">🔓 UNLOCK</button>
+                            </div>
+                        </div>
+                        <input id="refundInfo" value="Ziatogel" placeholder="Contoh: Ziatogel" oninput="handleLockableInput('refundInfo')">
+                    </div>
+
+                    <div class="input-group">
+                        <div class="label-row">
+                            <label>Perihal</label>
+                            <div class="lock-actions">
+                                <button type="button" id="refundPerihalLockBtn" class="lock-btn" onclick="setLockableState('refundPerihal', true); processRefundData();">🔒 LOCK</button>
+                                <button type="button" id="refundPerihalUnlockBtn" class="lock-btn" onclick="setLockableState('refundPerihal', false); processRefundData();">🔓 UNLOCK</button>
+                            </div>
+                        </div>
+                        <input id="refundPerihal" value="Pengembalian dana" placeholder="Contoh: Pengembalian dana" oninput="handleLockableInput('refundPerihal')">
+                    </div>
+
+                    <div class="input-group">
+                        <div class="label-row">
+                            <label>Dari Situs</label>
+                            <div class="lock-actions">
+                                <button type="button" id="refundSiteLockBtn" class="lock-btn" onclick="setLockableState('refundSite', true); processRefundData();">🔒 LOCK</button>
+                                <button type="button" id="refundSiteUnlockBtn" class="lock-btn" onclick="setLockableState('refundSite', false); processRefundData();">🔓 UNLOCK</button>
+                            </div>
+                        </div>
+                        <input id="refundSite" placeholder="Masukkan nama situs..." oninput="handleLockableInput('refundSite')">
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="paste-table">
+                    <div class="paste-col">
+                        <div class="col-header">Bank <span class="copy-icon" onclick="copyRefundColumn('refundBank')">📋</span></div>
+                        <textarea id="refundBank" class="table-textarea" placeholder="BCA&#10;BRI&#10;DANA" oninput="processRefundData()"></textarea>
+                    </div>
+
+                    <div class="paste-col">
+                        <div class="col-header">Nama <span class="copy-icon" onclick="copyRefundColumn('refundName')">📋</span></div>
+                        <textarea id="refundName" class="table-textarea" placeholder="NAMA REKENING 1&#10;NAMA REKENING 2" oninput="processRefundData()"></textarea>
+                    </div>
+
+                    <div class="paste-col">
+                        <div class="col-header">No Rek <span class="copy-icon" onclick="copyRefundColumn('refundNumber')">📋</span></div>
+                        <textarea id="refundNumber" class="table-textarea" placeholder="1234567890&#10;0987654321" oninput="processRefundData()"></textarea>
+                    </div>
+
+                    <div class="paste-col">
+                        <div class="col-header">Nominal <span class="copy-icon" onclick="copyRefundColumn('refundAmount')">📋</span></div>
+                        <textarea id="refundAmount" class="table-textarea" placeholder="50000&#10;100000" oninput="processRefundData()"></textarea>
+                    </div>
+
+                    <div class="paste-col">
+                        <div class="col-header">Lampiran <span class="copy-icon" onclick="copyRefundColumn('refundLampiran')">📋</span></div>
+                        <textarea id="refundLampiran" class="table-textarea" placeholder="Opsional, jika kosong otomatis ambil dari Lampiran Link di atas" oninput="processRefundData()"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="report-section">
+                <div class="report-header">
+                    <h3>Hasil Text Pengembalian Dana</h3>
+                    <span class="copy-icon" onclick="copyRefundReport()">📋 COPY SEMUA</span>
+                </div>
+                <div id="refundReportArea" class="report-area">Menunggu data pengembalian dana...</div>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+<div id="toast" class="toast">BERHASIL DISALIN!</div>
+
+<script>
+    function switchTab(tabId, button) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+        document.getElementById(tabId).classList.add('active');
+        button.classList.add('active');
+    }
+
+    function cleanNumber(value) {
+        return String(value || '').replace(/[^\d]/g, '');
+    }
+
+    function formatRupiah(value) {
+        const number = cleanNumber(value);
+
+        if (!number) {
+            return 'Rp -';
+        }
+
+        return 'Rp ' + parseInt(number, 10).toLocaleString('en-US');
+    }
+
+    function splitLines(value) {
+        return String(value || '')
+            .split('\n')
+            .map(item => item.trim())
+            .filter(item => item !== '');
+    }
+
+    function appendToTable(id, text) {
+        const container = document.getElementById(id);
+        const div = document.createElement('div');
+        div.className = 'item-row';
+        div.innerText = text || '-';
+        container.appendChild(div);
+    }
+
+    function processData() {
+        const rawReport = document.getElementById('inputText').value;
+        const rawLinks = document.getElementById('inputLampiran').value;
+
+        ['colBank', 'colName', 'colNumber', 'colAmount', 'colLink'].forEach(id => {
+            document.getElementById(id).innerHTML = '';
+        });
+
+        let totalSum = 0;
+        const lines = rawReport.split('\n');
+
+        let currentBank = '-';
+        let currentName = '-';
+        let currentNumber = '-';
+        let currentAmount = '-';
+
+        let hasName = false;
+        let hasNumber = false;
+        let hasAmount = false;
+
+        lines.forEach(line => {
+            const clean = line.trim();
+            if (!clean) return;
+
+            if (/(Info|Perihal|Dari Situs|Dari situs|Lampiran)/i.test(clean)) return;
+
+            if (/bank/i.test(clean)) {
+                const bMatch = clean.match(/(BCA|MANDIRI|BNI|BRI|CIMB|DANAMON|PERMATA|PANIN|OCBC|BSI|MAYBANK|DANA|OVO|GOPAY|SHOPEEPAY|LINKAJA|SEA BANK|SEABANK)/i);
+
+                if (bMatch) {
+                    currentBank = bMatch[0].toUpperCase();
+                } else {
+                    const value = clean.split(/[:>-]/).pop().trim();
+                    if (value) currentBank = value.toUpperCase();
+                }
+            }
+
+            if (/nama rekening|a\/n|atas nama/i.test(clean)) {
+                currentName = clean.split(/[:>-]/).pop().trim().toUpperCase();
+                hasName = true;
+            }
+
+            if (/nomor rekening|no rek/i.test(clean)) {
+                const nMatch = clean.match(/\d{7,30}/);
+                if (nMatch) {
+                    currentNumber = nMatch[0];
+                    hasNumber = true;
+                }
+            }
+
+            if (/nominal|jumlah/i.test(clean)) {
+                const aMatch = clean.match(/[\d.,]{4,}/);
+
+                if (aMatch) {
+                    const number = cleanNumber(aMatch[0]);
+                    const amountNumber = number ? parseInt(number, 10) : 0;
+
+                    currentAmount = amountNumber ? amountNumber.toLocaleString('en-US') : aMatch[0];
+                    totalSum += amountNumber;
+                    hasAmount = true;
+                }
+            }
+
+            if (hasName && hasNumber && hasAmount) {
+                appendToTable('colBank', currentBank);
+                appendToTable('colName', currentName);
+                appendToTable('colNumber', currentNumber);
+                appendToTable('colAmount', currentAmount);
+
+                currentBank = '-';
+                currentName = '-';
+                currentNumber = '-';
+                currentAmount = '-';
+
+                hasName = false;
+                hasNumber = false;
+                hasAmount = false;
+            }
+        });
+
+        const totalBox = document.getElementById('visualTotalNominal');
+
+        if (totalSum > 0) {
+            totalBox.style.display = 'block';
+            totalBox.innerText = 'TOTAL NOMINAL : Rp ' + totalSum.toLocaleString('en-US');
+        } else {
+            totalBox.style.display = 'none';
+        }
+
+        const linkArray = splitLines(rawLinks);
+        linkArray.forEach(link => appendToTable('colLink', link));
+
+        const areaGabungan = document.getElementById('fullReportArea');
+
+        if (!rawReport.trim() && !rawLinks.trim()) {
+            areaGabungan.innerText = 'Menunggu data ditempel...';
+            return;
+        }
+
+        let fullText = rawReport.trimEnd();
+
+        if (totalSum > 0) {
+            fullText += '\n\nTOTAL NOMINAL : Rp ' + totalSum.toLocaleString('en-US');
+        }
+
+        if (rawLinks.trim()) {
+            fullText += '\n\nLampiran :\n' + rawLinks.trim();
+        } else {
+            fullText += '\n\nLampiran :\n-';
+        }
+
+        areaGabungan.innerText = fullText;
+    }
+
+    function copyColumn(id, isLampiran = false) {
+        const rows = document.getElementById(id).getElementsByClassName('item-row');
+
+        if (rows.length === 0) return;
+
+        let textToCopy = isLampiran ? 'Lampiran :\n' : '';
+
+        for (let i = 0; i < rows.length; i++) {
+            textToCopy += rows[i].innerText + '\n';
+        }
+
+        executeCopy(textToCopy.trim());
+    }
+
+    function copyFullReport() {
+        const text = document.getElementById('fullReportArea').innerText;
+
+        if (!text || text.includes('Menunggu')) return;
+
+        executeCopy(text);
+    }
+
+    function clearAll() {
+        document.getElementById('inputText').value = '';
+        document.getElementById('inputLampiran').value = '';
+        processData();
+    }
+
+    const lockableFields = {
+        refundInfo: {
+            valueKey: 'refundInfoPermanentValue',
+            lockKey: 'refundInfoLocked',
+            defaultValue: 'Ziatogel'
+        },
+        refundPerihal: {
+            valueKey: 'refundPerihalPermanentValue',
+            lockKey: 'refundPerihalLocked',
+            defaultValue: 'Pengembalian dana'
+        },
+        refundSite: {
+            valueKey: 'refundSitePermanentValue',
+            lockKey: 'refundSiteLocked',
+            defaultValue: ''
+        }
+    };
+
+    function safeGetStorage(key) {
+        try {
+            return localStorage.getItem(key);
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function safeSetStorage(key, value) {
+        try {
+            localStorage.setItem(key, value);
+        } catch (error) {
+            // Local storage bisa nonaktif di browser tertentu, report tetap berjalan normal.
+        }
+    }
+
+    function setLockableState(id, locked) {
+        const config = lockableFields[id];
+        const input = document.getElementById(id);
+        const lockButton = document.getElementById(id + 'LockBtn');
+        const unlockButton = document.getElementById(id + 'UnlockBtn');
+
+        if (!config || !input || !lockButton || !unlockButton) return;
+
+        // LOCK = tidak dapat diedit, UNLOCK = bisa diedit.
+        input.readOnly = locked;
+        input.classList.toggle('locked-input', locked);
+
+        lockButton.classList.toggle('locked', locked);
+        unlockButton.classList.toggle('unlocked', !locked);
+
+        lockButton.title = locked ? 'Sedang terkunci dan tidak bisa diedit' : 'Klik untuk mengunci text';
+        unlockButton.title = locked ? 'Klik untuk membuka agar bisa diedit' : 'Sedang terbuka dan bisa diedit';
+
+        safeSetStorage(config.lockKey, locked ? '1' : '0');
+        safeSetStorage(config.valueKey, input.value);
+    }
+
+    function toggleLockableField(id) {
+        const input = document.getElementById(id);
+        if (!input) return;
+
+        const willLock = !input.readOnly;
+        setLockableState(id, willLock);
+        processRefundData();
+    }
+
+    function handleLockableInput(id) {
+        const config = lockableFields[id];
+        const input = document.getElementById(id);
+
+        if (config && input) {
+            safeSetStorage(config.valueKey, input.value);
+        }
+
+        processRefundData();
+    }
+
+    function loadLockableFields() {
+        Object.keys(lockableFields).forEach(id => {
+            const config = lockableFields[id];
+            const input = document.getElementById(id);
+
+            if (!input) return;
+
+            const savedValue = safeGetStorage(config.valueKey);
+            const savedLocked = safeGetStorage(config.lockKey) === '1';
+
+            if (savedValue !== null) {
+                input.value = savedValue;
+            } else if (!input.value) {
+                input.value = config.defaultValue;
+            }
+
+            setLockableState(id, savedLocked);
+        });
+    }
+
+    function resetLockableField(id, value) {
+        const input = document.getElementById(id);
+        if (!input) return;
+
+        if (input.readOnly) return;
+
+        input.value = value;
+        handleLockableInput(id);
+    }
+
+    function processRefundData() {
+        const info = document.getElementById('refundInfo').value.trim() || 'Ziatogel';
+        const perihal = document.getElementById('refundPerihal').value.trim() || 'Pengembalian dana';
+        const site = document.getElementById('refundSite').value.trim();
+
+        const banks = splitLines(document.getElementById('refundBank').value);
+        const names = splitLines(document.getElementById('refundName').value);
+        const numbers = splitLines(document.getElementById('refundNumber').value);
+        const amounts = splitLines(document.getElementById('refundAmount').value);
+        const manualLampirans = splitLines(document.getElementById('refundLampiran').value);
+        const topLampirans = splitLines(document.getElementById('inputLampiran') ? document.getElementById('inputLampiran').value : '');
+        // Jika kolom Lampiran di Pengembalian Dana kosong, otomatis ambil dari Lampiran Link yang di atas.
+        const lampirans = manualLampirans.length > 0 ? manualLampirans : topLampirans;
+
+        const maxRows = Math.max(
+            banks.length,
+            names.length,
+            numbers.length,
+            amounts.length
+        );
+
+        const area = document.getElementById('refundReportArea');
+
+        if (maxRows === 0) {
+            area.innerText = 'Menunggu data pengembalian dana...';
+            return;
+        }
+
+        let report = '';
+        report += 'Info : ' + info + '\n';
+        report += 'Perihal : ' + perihal + '\n';
+        report += 'Dari situs : ' + (site || '-') + '\n\n';
+
+        let totalNominal = 0;
+
+        for (let i = 0; i < maxRows; i++) {
+            const bank = banks[i] || '-';
+            const name = names[i] || '-';
+            const number = numbers[i] || '-';
+            const amount = amounts[i] || '';
+
+            const nominalNumber = cleanNumber(amount);
+            if (nominalNumber) {
+                totalNominal += parseInt(nominalNumber, 10);
+            }
+
+            report += 'BANK : ' + bank.toUpperCase() + '\n';
+            report += 'NAMA REKENING : ' + name.toUpperCase() + '\n';
+            report += 'NOMOR REKENING : ' + number + '\n';
+            report += 'NOMINAL : ' + formatRupiah(amount) + '\n';
+
+            if (i !== maxRows - 1) {
+                report += '\n';
+            }
+        }
+
+        // Lampiran dibuat 1x di bagian bawah report.
+        if (maxRows > 1 && totalNominal > 0) {
+            report += '\nTOTAL NOMINAL : Rp ' + totalNominal.toLocaleString('en-US');
+        }
+
+        if (lampirans.length > 0) {
+            const lampiranText = lampirans.join('\n');
+            report += '\nLampiran :\n' + lampiranText;
+        }
+
+        area.innerText = report;
+    }
+
+    function copyRefundColumn(id) {
+        const text = document.getElementById(id).value.trim();
+
+        if (!text) return;
+
+        executeCopy(text);
+    }
+
+    function copyRefundReport() {
+        const text = document.getElementById('refundReportArea').innerText;
+
+        if (!text || text.includes('Menunggu')) return;
+
+        executeCopy(text);
+    }
+
+    function clearRefund() {
+        resetLockableField('refundInfo', 'Ziatogel');
+        resetLockableField('refundPerihal', 'Pengembalian dana');
+        resetLockableField('refundSite', '');
+        document.getElementById('refundBank').value = '';
+        document.getElementById('refundName').value = '';
+        document.getElementById('refundNumber').value = '';
+        document.getElementById('refundAmount').value = '';
+        document.getElementById('refundLampiran').value = '';
+        processRefundData();
+    }
+
+    function executeCopy(text) {
+        if (!text) return;
+
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(showToast).catch(() => fallbackCopy(text));
+        } else {
+            fallbackCopy(text);
+        }
+    }
+
+    function fallbackCopy(text) {
+        const el = document.createElement('textarea');
+        el.value = text;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        showToast();
+    }
+
+    function showToast() {
+        const toast = document.getElementById('toast');
+        toast.style.display = 'block';
+
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 1500);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        processData();
+        loadLockableFields();
+        processRefundData();
+    });
+</script>
+
+</body>
+</html>
