@@ -1543,11 +1543,11 @@
             </div>
             <div class="scatter-result-grid">
                 <div>
-                    <label>Total All Kolom C</label>
+                    <label>Total User ID Kolom B</label>
                     <div class="scatter-info-box" id="scatterTotalUsers">0</div>
                 </div>
                 <div>
-                    <label>Total Nominal Kolom I</label>
+                    <label>Total Nominal Kolom F</label>
                     <div class="scatter-info-box" id="scatterTotalNominal">0</div>
                 </div>
                 <div>
@@ -1555,7 +1555,7 @@
                     <div class="scatter-info-box" id="scatterFolderName"></div>
                 </div>
             </div>
-            <div class="scatter-report-box" id="scatterReportResult">Upload file Excel terlebih dahulu untuk membaca Kolom C User ID dan Kolom I Nominal.</div>
+            <div class="scatter-report-box" id="scatterReportResult">Upload file Excel terlebih dahulu untuk membaca User ID dari Kolom B dan Nominal dari Kolom F.</div>
         </div>
 
         <div class="scatter-menu-bottom qris-menu-bottom">
@@ -1791,11 +1791,33 @@
             return isFinite(numeric) ? numeric : 0;
         }
 
+        function normalizeScatterText(value) {
+            return String(value ?? '')
+                .trim()
+                .toLowerCase()
+                .replace(/[_-]+/g, ' ')
+                .replace(/\s+/g, ' ');
+        }
+
         function isScatterHeaderRow(userId, nominal) {
-            const userText = String(userId ?? '').toLowerCase();
-            const nominalText = String(nominal ?? '').toLowerCase();
-            return (userText.includes('user') || userText.includes('member') || userText === 'id') &&
-                   (nominalText.includes('nominal') || nominalText.includes('amount') || nominalText.includes('jumlah'));
+            const userText = normalizeScatterText(userId);
+            const nominalText = normalizeScatterText(nominal);
+
+            const userHeaders = [
+                'user id', 'userid', 'id user', 'member id', 'id member',
+                'username', 'user', 'member'
+            ];
+            const nominalHeaders = [
+                'nominal', 'amount', 'jumlah', 'total nominal',
+                'nilai bonus', 'bonus', 'deposit'
+            ];
+
+            return userHeaders.includes(userText) || nominalHeaders.includes(nominalText);
+        }
+
+        function isScatterSummaryRow(userId) {
+            const userText = normalizeScatterText(userId);
+            return /^(grand total|sub ?total|total|jumlah|rekap|summary|keterangan|ket)$/i.test(userText);
         }
 
         async function handleScatterExcel(event) {
@@ -1818,21 +1840,24 @@
                     const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, defval: '' });
 
                     rows.forEach(row => {
-                        const userId = row[2];   // Kolom C
-                        const nominal = row[8];  // Kolom I
+                        const userId = row[1];   // Kolom B: User ID
+                        const nominal = row[5];  // Kolom F: Nominal
                         const cleanUser = String(userId ?? '').trim();
                         const cleanNominal = String(nominal ?? '').trim();
 
-                        if (!cleanUser && !cleanNominal) return;
+                        // Hanya hitung baris data yang memiliki User ID valid di Kolom B.
+                        // Baris header, total, subtotal, dan baris kosong akan dilewati.
+                        if (!cleanUser) return;
                         if (isScatterHeaderRow(cleanUser, cleanNominal)) return;
+                        if (isScatterSummaryRow(cleanUser)) return;
 
-                        if (cleanUser) totalUsers++;
+                        totalUsers += 1;
                         totalNominal += parseNominalValue(cleanNominal);
                     });
                 });
 
                 const folderName = getScatterFolderName();
-                const report = `Bonus scatter mahjong ways 1 & 2\nTotal All : ${totalUsers}\nNominal  : ${formatRupiahNumber(totalNominal)}\n\nKet : Dilakukan Manual Deposit yang dimana Member mendapatkan Bonus scatter.`;
+                const report = `Bonus scatter mahjong ways 1 & 2\nTotal User ID : ${totalUsers}\nNominal  : ${formatRupiahNumber(totalNominal)}\n\nKet : Dilakukan Manual Deposit yang dimana Member mendapatkan Bonus scatter.`;
 
                 document.getElementById('scatterTotalUsers').innerText = totalUsers;
                 document.getElementById('scatterTotalNominal').innerText = Number(totalNominal || 0).toLocaleString('en-US');
@@ -1851,10 +1876,7 @@
             document.getElementById('scatterTotalNominal').innerText = '0';
             document.getElementById('scatterFolderName').innerText = getScatterFolderName();
 
-            // Load Daily Repot WhatsApp
-            loadDailyWhatsappReport();
-            loadQrisReport();
-            document.getElementById('scatterReportResult').innerText = 'Upload file Excel terlebih dahulu untuk membaca Kolom C User ID dan Kolom I Nominal.';
+            document.getElementById('scatterReportResult').innerText = 'Upload file Excel terlebih dahulu untuk membaca User ID dari Kolom B dan Nominal dari Kolom F.';
             showNotif("SC BONUS SCATTER DIRESET");
         }
 
@@ -2081,6 +2103,9 @@ ${getDailyWhatsappRoutineCopyLine()}` : baseReport;
             updateRekapan();
 
             document.getElementById('scatterFolderName').innerText = getScatterFolderName();
+
+            // Load QRIS
+            loadQrisReport();
 
             // Load Daily Repot WhatsApp
             loadDailyWhatsappReport();
